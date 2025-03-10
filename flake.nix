@@ -78,7 +78,7 @@
                 "zerocallusedregs"
               ];
 
-              name = "espresso-sequencer-dev-shell";
+              name = "espresso-network-dev-shell";
               buildInputs = with pkgs; [
                 cmake
                 cargo-with-nightly

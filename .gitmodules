@@ -1,4 +1,4 @@
-[submodule "espresso-sequencer"]
-	path = espresso-sequencer
-	url = https://github.com/EspressoSystems/espresso-sequencer
-        branch = "main"
+[submodule "espresso-network"]
+	path = espresso-network
+	url = https://github.com/EspressoSystems/espresso-network
+	branch = main

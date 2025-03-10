@@ -1847,7 +1847,7 @@ checksum = "7c74b8349d32d297c9134b8c88677813a227df8f779daa29bfc29c183fe3dca6"
 [[package]]
 name = "contract-bindings"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-sequencer?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
+source = "git+https://github.com/espressosystems/espresso-network?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
 dependencies = [
  "ethers",
  "serde",
@@ -2715,7 +2715,7 @@ source = "git+https://github.com/espressosystems/espresso-systems-common?tag=0.4
 [[package]]
 name = "espresso-types"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-sequencer?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
+source = "git+https://github.com/espressosystems/espresso-network?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
 dependencies = [
  "anyhow",
  "ark-serialize",
@@ -3937,7 +3937,7 @@ dependencies = [
 [[package]]
 name = "hotshot-contract-adapter"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-sequencer?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
+source = "git+https://github.com/espressosystems/espresso-network?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
 dependencies = [
  "anyhow",
  "ark-bn254",
@@ -8227,7 +8227,7 @@ checksum = "cd0b0ec5f1c1ca621c432a25813d8d60c88abe6d3e08a3eb9cf37d97a0fe3d73"
 [[package]]
 name = "sequencer-utils"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-sequencer?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
+source = "git+https://github.com/espressosystems/espresso-network?branch=main#84e59fcd7e8bce5f622ef9009ebf13284148f8ee"
 dependencies = [
  "anyhow",
  "ark-serialize",

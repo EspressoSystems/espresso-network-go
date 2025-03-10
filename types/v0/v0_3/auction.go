@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	common_types "github.com/EspressoSystems/espresso-sequencer-go/types/common"
+	common_types "github.com/EspressoSystems/espresso-network-go/types/common"
 	common "github.com/ethereum/go-ethereum/common"
 )
 

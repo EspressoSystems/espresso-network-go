@@ -1,7 +1,7 @@
 # Espresso Sequencer Go SDK
 
 This package provides tools and interfaces for working with the
-[Espresso sequencer](https://github.com/EspressoSystems/espresso-sequencer) in Go. It should
+[Espresso sequencer](https://github.com/EspressoSystems/espresso-network) in Go. It should
 (eventually) provide everything needed to integrate a rollup written in Go with the Espresso
 sequencer.
 
@@ -9,7 +9,7 @@ sequencer.
 
 - Obtain code:
 
-        git clone git@github.com:EspressoSystems/espresso-sequencer-go
+        git clone git@github.com:EspressoSystems/espresso-network-go
         git submodule update --init --recursive
 
 - Make sure [nix](https://nixos.org/download.html) is installed.
@@ -19,19 +19,19 @@ sequencer.
 
 Run the following command to download the static library for the current platform.
 
-    sudo go run github.com/EspressoSystems/espresso-sequencer-go/download download
+    sudo go run github.com/EspressoSystems/espresso-network-go/download download
 
 Or you can specify the version with `-v` flag.
 
-    sudo go run github.com/EspressoSystems/espresso-sequencer-go/download download -v 0.0.32
+    sudo go run github.com/EspressoSystems/espresso-network-go/download download -v 0.0.32
 
 Build the verification library.
 
-    go build github.com/EspressoSystems/espresso-sequencer-go/verification
+    go build github.com/EspressoSystems/espresso-network-go/verification
 
 You can also clean the downloaded files with the following command.
 
-    sudo go run github.com/EspressoSystems/espresso-sequencer-go/download clean
+    sudo go run github.com/EspressoSystems/espresso-network-go/download clean
 
 ## Run the linter and unit tests
 

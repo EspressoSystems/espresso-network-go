@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	types "github.com/EspressoSystems/espresso-sequencer-go/types"
+	types "github.com/EspressoSystems/espresso-network-go/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

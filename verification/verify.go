@@ -9,7 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 
-	espressoTypes "github.com/EspressoSystems/espresso-sequencer-go/types"
+	espressoTypes "github.com/EspressoSystems/espresso-network-go/types"
 )
 
 func VerifyNamespace(

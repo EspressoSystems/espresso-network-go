@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	types "github.com/EspressoSystems/espresso-sequencer-go/types"
-	common "github.com/EspressoSystems/espresso-sequencer-go/types/common"
+	types "github.com/EspressoSystems/espresso-network-go/types"
+	common "github.com/EspressoSystems/espresso-network-go/types/common"
 )
 
 var _ QueryService = (*Client)(nil)
