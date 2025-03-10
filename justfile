@@ -2,9 +2,14 @@ lint:
     golangci-lint run ./...
 
 test:
+	success=0; \
 	for i in $(seq 1 3); do \
-		go test -v ./... && break || echo "Retrying... ($$i)"; \
-	done
+		go test -v ./... && { success=1; break; } || { echo "Test failed. Retrying in 5 seconds..."; sleep 5; }; \
+	done; \
+	if [ "${success}" -eq 0 ]; then \
+		echo "All test attempts failed."; \
+		exit 1; \
+	fi
 
 bind-light-client:
 	cd espresso-network/contracts && forge build --force
