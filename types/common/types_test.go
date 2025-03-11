@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	tagged_base64 "github.com/EspressoSystems/espresso-sequencer-go/tagged-base64"
+	tagged_base64 "github.com/EspressoSystems/espresso-network-go/tagged-base64"
 
 	"github.com/ethereum/go-ethereum/common"
 
@@ -13,7 +13,7 @@ import (
 )
 
 // Reference data taken from the reference sequencer implementation
-// (https://github.com/EspressoSystems/espresso-sequencer/blob/main/data)
+// (https://github.com/EspressoSystems/espresso-network/blob/main/data)
 
 var ReferenceL1BLockInfo L1BlockInfo = L1BlockInfo{
 	Number:    123,
@@ -88,7 +88,7 @@ func TestEspressoTransactionJson(t *testing.T) {
 }
 
 // Commitment tests ported from the reference sequencer implementation
-// (https://github.com/EspressoSystems/espresso-sequencer/blob/main/sequencer/src/block.rs)
+// (https://github.com/EspressoSystems/espresso-network/blob/main/sequencer/src/block.rs)
 
 func TestEspressoTypesL1BlockInfoCommit(t *testing.T) {
 	require.Equal(t, ReferenceL1BLockInfo.Commit(), Commitment{224, 122, 115, 150, 226, 202, 216, 139, 51, 221, 23, 79, 54, 243, 107, 12, 12, 144, 113, 99, 133, 217, 207, 73, 120, 182, 115, 84, 210, 230, 126, 148})

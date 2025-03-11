@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	types "github.com/EspressoSystems/espresso-sequencer-go/types"
+	types "github.com/EspressoSystems/espresso-network-go/types"
 )
 
 // Interface to the Espresso Sequencer query service.

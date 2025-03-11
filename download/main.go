@@ -14,7 +14,7 @@ import (
 
 const targetDir = "../target"
 
-const baseURL = "https://github.com/EspressoSystems/espresso-sequencer-go/releases"
+const baseURL = "https://github.com/EspressoSystems/espresso-network-go/releases"
 
 func main() {
 	var version string

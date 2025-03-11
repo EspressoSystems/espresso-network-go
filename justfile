@@ -2,16 +2,21 @@ lint:
     golangci-lint run ./...
 
 test:
+	success=0; \
 	for i in $(seq 1 3); do \
-		go test -v ./... && break || echo "Retrying... ($$i)"; \
-	done
+		go test -v ./... && { success=1; break; } || { echo "Test failed. Retrying in 5 seconds..."; sleep 5; }; \
+	done; \
+	if [ "${success}" -eq 0 ]; then \
+		echo "All test attempts failed."; \
+		exit 1; \
+	fi
 
 bind-light-client:
-	cd espresso-sequencer/contracts && forge build --force
-	cd espresso-sequencer/contracts/out/LightClient.sol && cat LightClient.json | jq .abi > LightClient.abi
-	cd espresso-sequencer/contracts/out/LightClientMock.sol && cat LightClientMock.json | jq .abi > LightClientMock.abi
-	abigen --abi espresso-sequencer/contracts/out/LightClient.sol/LightClient.abi --pkg lightclient --out light-client/lightclient.go
-	abigen --abi espresso-sequencer/contracts/out/LightClientMock.sol/LightClientMock.abi --pkg lightclientmock --out light-client-mock/lightclient.go
+	cd espresso-network/contracts && forge build --force
+	cd espresso-network/contracts/out/LightClient.sol && cat LightClient.json | jq .abi > LightClient.abi
+	cd espresso-network/contracts/out/LightClientMock.sol && cat LightClientMock.json | jq .abi > LightClientMock.abi
+	abigen --abi espresso-network/contracts/out/LightClient.sol/LightClient.abi --pkg lightclient --out light-client/lightclient.go
+	abigen --abi espresso-network/contracts/out/LightClientMock.sol/LightClientMock.abi --pkg lightclientmock --out light-client-mock/lightclient.go
 
 verification_dir := "./verification/rust"
 target_lib := "./target/lib"
