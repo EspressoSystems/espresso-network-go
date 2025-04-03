@@ -1,19 +1,12 @@
 {
   "fields": {
-    "auction_results": {
-      "reserve_bids": [],
-      "view_number": 0,
-      "winning_bids": []
-    },
     "block_merkle_tree_root": "MERKLE_COMM~AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQA",
     "builder_commitment": "BUILDER_COMMITMENT~jlEvJoHPETCSwXF6UKcD22zOjfoHGuyVFTVkP_BNc-no",
-    "builder_signature": [
-      {
-        "r": "0xa1c3795850b7b490e616b60fead89753841fbc9fffe1a939d483f1d959ad1c45",
-        "s": "0x20228f5b63b14792d371dce479978e45020f19602189ef6d325b73029a2848ac",
-        "v": 27
-      }
-    ],
+    "builder_signature": {
+      "r": "0xa1c3795850b7b490e616b60fead89753841fbc9fffe1a939d483f1d959ad1c45",
+      "s": "0x20228f5b63b14792d371dce479978e45020f19602189ef6d325b73029a2848ac",
+      "v": 27
+    },
     "chain_config": {
       "chain_config": {
         "Left": {
@@ -26,12 +19,10 @@
         }
       }
     },
-    "fee_info": [
-      {
-        "account": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-        "amount": "0"
-      }
-    ],
+    "fee_info": {
+      "account": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "amount": "0"
+    },
     "fee_merkle_tree_root": "MERKLE_COMM~AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAKA",
     "height": 42,
     "l1_finalized": {
@@ -44,6 +35,7 @@
       "bytes": "AwAAAO7/wAAcBgAAobC5EkAOAABksAWiXBQAAA=="
     },
     "payload_commitment": "HASH~u-mEo1mwByROUhnvO7pBFitcD0UEvruK-b8WONkKoCLQ",
+    "reward_merkle_tree_root": "MERKLE_COMM~AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAKA",
     "timestamp": 789
   },
   "version": {
