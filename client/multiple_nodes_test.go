@@ -151,6 +151,8 @@ func TestFetchWithMajority(t *testing.T) {
 	assert.Equal(t, header1.Header.Commit(), resultHeader.Header.Commit())
 }
 
+// TODO: Fix the submit API
+
 func TestApiWithSingleEspressoDevNode(t *testing.T) {
 	ctx := context.Background()
 	cleanup := runEspresso()
@@ -161,19 +163,19 @@ func TestApiWithSingleEspressoDevNode(t *testing.T) {
 		t.Fatal("failed to start espresso dev node", err)
 	}
 
-	client := NewMultipleNodesClient([]string{"http://localhost:21000"})
+	client := NewMultipleNodesClient([]string{"http://localhost:21"}, []string{"http://localhost:21000"})
 
-	blockHeight, err := client.FetchLatestBlockHeight(ctx)
+	_, err = client.FetchLatestBlockHeight(ctx)
 	if err != nil {
 		t.Fatal("failed to fetch block height")
 	}
-
-	_, err = client.FetchHeaderByHeight(ctx, blockHeight-1)
+	blockHeight := uint64(1)
+	_, err = client.FetchHeaderByHeight(ctx, blockHeight)
 	if err != nil {
 		t.Fatal("failed to fetch header", err)
 	}
 
-	_, err = client.FetchVidCommonByHeight(ctx, blockHeight-1)
+	_, err = client.FetchVidCommonByHeight(ctx, blockHeight)
 	if err != nil {
 		t.Fatal("failed to fetch vid common", err)
 	}

@@ -21,71 +21,27 @@ func TestApiWithEspressoDevNode(t *testing.T) {
 		t.Fatal("failed to start espresso dev node", err)
 	}
 
-	client := NewClient("http://localhost:21000", "http://localhost:21000/v1")
+	client := NewClient("http://localhost:22000", "http://localhost:21000")
 
-	blockHeight, err := client.FetchLatestBlockHeight(ctx)
+	_, err = client.FetchLatestBlockHeight(ctx)
 	if err != nil {
-		t.Fatal("failed to fetch block height")
+		t.Fatal("failed to fetch block height", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
-	defer cancel()
-
-	ticker := time.NewTicker(1 * time.Second) // Retry every 1s
-	defer ticker.Stop()
-
-	for {
-		_, err = client.FetchHeaderByHeight(ctx, blockHeight)
-		if err == nil {
-			break // Success
-		}
-
-		select {
-		case <-ctx.Done():
-			t.Fatal("timeout after 40s, last error:", err)
-		case <-ticker.C:
-			continue // Retry
-		}
+	blockHeight := uint64(1)
+	_, err = client.FetchHeaderByHeight(ctx, blockHeight)
+	if err != nil {
+		t.Fatal("failed to fetch header by height", err)
 	}
 
-	ctx, cancel = context.WithTimeout(context.Background(), 40*time.Second)
-	defer cancel()
-
-	ticker = time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
-
-	for {
-		_, err = client.FetchVidCommonByHeight(ctx, blockHeight)
-		if err == nil {
-			break // Success
-		}
-
-		select {
-		case <-ctx.Done():
-			t.Fatal("timeout after 40s, last error:", err)
-		case <-ticker.C:
-			continue // Retry
-		}
+	_, err = client.FetchVidCommonByHeight(ctx, blockHeight)
+	if err != nil {
+		t.Fatal("failed to fetch vid common by height", err)
 	}
 
-	ctx, cancel = context.WithTimeout(context.Background(), 40*time.Second)
-	defer cancel()
-
-	ticker = time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
-
-	for {
-		_, err = client.FetchHeadersByRange(ctx, 1, 1)
-		if err == nil {
-			break // Success
-		}
-
-		select {
-		case <-ctx.Done():
-			t.Fatal("timeout after 40s, last error:", err)
-		case <-ticker.C:
-			continue // Retry
-		}
+	_, err = client.FetchHeadersByRange(ctx, 1, 1)
+	if err != nil {
+		t.Fatal("failed to fetch headers by range", err)
 	}
 
 }
@@ -153,6 +109,6 @@ func waitForEspressoNode(ctx context.Context) error {
 		return err
 	}
 	// Wait a bit for dev node to be ready totally
-	time.Sleep(5 * time.Second)
+	time.Sleep(1 * time.Minute)
 	return nil
 }

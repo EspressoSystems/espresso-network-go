@@ -12,7 +12,6 @@ import (
 
 	types "github.com/EspressoSystems/espresso-network-go/types"
 	common "github.com/EspressoSystems/espresso-network-go/types/common"
-	"github.com/ethereum/go-ethereum/log"
 )
 
 var _ QueryService = (*Client)(nil)
@@ -28,6 +27,9 @@ type Client struct {
 func NewClient(url string, fallBackUrl string) *Client {
 	if !strings.HasSuffix(url, "/") {
 		url += "/"
+	}
+	if !strings.HasSuffix(fallBackUrl, "/") {
+		fallBackUrl += "/"
 	}
 	return &Client{
 		baseUrl:     url,
@@ -178,11 +180,12 @@ func (c *Client) getRawMessage(ctx context.Context, format string, args ...any) 
 	if err != nil {
 		// try with the fallback url
 		if c.fallBackUrl != "" {
-			log.Info("Trying with fallback url", "url", c.fallBackUrl)
-			res, err = c.tryRequest(ctx, c.fallBackUrl, format, args...)
-		}
-		if err != nil {
-			return nil, err
+			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
+			resFallBack, errFallBack := c.tryRequest(ctx, c.fallBackUrl, format, args...)
+			if errFallBack != nil {
+				return nil, err
+			}
+			res = resFallBack
 		}
 	}
 
@@ -223,25 +226,21 @@ func (c *Client) tryRequest(ctx context.Context, baseUrl, format string, args ..
 	// We will try to connect with the url for 5 seconds, if the connection fails
 	// we will return the error
 	deadline := time.Now().Add(5 * time.Second)
-
+	fmt.Printf("Trying with url %s", url)
 	var lastErr error
 	for {
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 		if err != nil {
 			return nil, err
 		}
-
 		res, err := c.client.Do(req)
-
 		if err == nil {
 			return res, nil
 		}
 
 		// It only returns an error if  caused by client policy (such as CheckRedirect),
 		// or failure to speak HTTP (such as a network connectivity problem). A non-2xx status code doesn't cause an error.
-		if err != nil {
-			lastErr = err
-		}
+		lastErr = err
 
 		if time.Now().After(deadline) {
 			break

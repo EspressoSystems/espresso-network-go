@@ -18,7 +18,7 @@ func TestFetchDevInfo(t *testing.T) {
 	cleanup := runEspresso()
 	defer cleanup()
 
-	client := NewClient("http://localhost:20000", "http://localhost:20000/v1")
+	client := NewClient("http://localhost:21", "http://localhost:21000")
 
 	for {
 		available, err := client.IsAvailable(ctx)

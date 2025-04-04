@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Client struct {
@@ -18,6 +19,9 @@ type Client struct {
 func NewClient(url string, fallBackurl string) *Client {
 	if !strings.HasSuffix(url, "/") {
 		url += "/"
+	}
+	if !strings.HasSuffix(fallBackurl, "/") {
+		fallBackurl += "/"
 	}
 	return &Client{
 		baseUrl:     url,
@@ -43,16 +47,19 @@ func (c *Client) FetchDevInfo(ctx context.Context) (DevInfo, error) {
 }
 
 func (c *Client) getRawMessage(ctx context.Context, format string, args ...any) (json.RawMessage, error) {
-	url := c.baseUrl + fmt.Sprintf(format, args...)
+	res, err := c.tryRequest(ctx, c.baseUrl, format, args...)
+	if err != nil {
+		// try with the fallback url
+		if c.fallBackUrl != "" {
+			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
+			resFallBack, errFallBack := c.tryRequest(ctx, c.fallBackUrl, format, args...)
+			if errFallBack != nil {
+				return nil, err
+			}
+			res = resFallBack
+		}
+	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	res, err := c.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
@@ -82,4 +89,41 @@ func (c *Client) get(ctx context.Context, out any, format string, args ...any) e
 		return fmt.Errorf("request failed with body %s and error %v", string(body), err)
 	}
 	return nil
+}
+
+func (c *Client) tryRequest(ctx context.Context, baseUrl, format string, args ...interface{}) (*http.Response, error) {
+
+	url := baseUrl + fmt.Sprintf(format, args...)
+	// We will try to connect with the url for 5 seconds, if the connection fails
+	// we will return the error
+	deadline := time.Now().Add(5 * time.Second)
+	fmt.Printf("Trying with url %s", url)
+	var lastErr error
+	for {
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+		if err != nil {
+			return nil, err
+		}
+		res, err := c.client.Do(req)
+		if err == nil {
+			return res, nil
+		}
+
+		// It only returns an error if  caused by client policy (such as CheckRedirect),
+		// or failure to speak HTTP (such as a network connectivity problem). A non-2xx status code doesn't cause an error.
+		lastErr = err
+
+		if time.Now().After(deadline) {
+			break
+		}
+
+		// Wait a bit before retrying
+		select {
+		case <-time.After(1 * time.Second):
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+	}
+
+	return nil, lastErr
 }
