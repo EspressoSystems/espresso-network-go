@@ -30,6 +30,7 @@ jf-rescue = { version = "0.1.0", git = "https://github.com/EspressoSystems/jelly
 
 hotshot-types = { git = "https://github.com/EspressoSystems/espresso-network", default-features = false, rev = "b3ee13f" }
 hotshot-query-service = { git = "https://github.com/espressosystems/espresso-network", rev = "b3ee13f" }
+espresso-types = { git = "https://github.com/espressosystems/espresso-network", rev = "b3ee13f" }
 
 # https://tikv.github.io/doc/openssl/index.html
 openssl = { version = "0.10", features = ["vendored"] }
