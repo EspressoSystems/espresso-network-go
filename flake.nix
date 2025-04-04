@@ -25,9 +25,8 @@
           inherit overlays system;
         };
         stableToolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-        nightlyToolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal.override {
-          extensions = [ "rust-src" ];
-          targets = [ "wasm32-unknown-unknown" "wasm32-wasi" ];
+          nightlyToolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal.override {
+            extensions = [ "rust-analyzer" "rustfmt" ];
         });
         # A script that calls nightly cargo if invoked with `+nightly`
         # as the first argument, otherwise it calls stable cargo.
