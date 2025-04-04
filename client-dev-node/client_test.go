@@ -18,7 +18,7 @@ func TestFetchDevInfo(t *testing.T) {
 	cleanup := runEspresso()
 	defer cleanup()
 
-	client := NewClient("http://localhost:21", "http://localhost:21000")
+	client := NewClient("http://localhost:21", "http://localhost:20000/v0")
 
 	for {
 		available, err := client.IsAvailable(ctx)
@@ -33,8 +33,8 @@ func TestFetchDevInfo(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed to fetch dev info", err)
 	}
-	// assert.Equal(t, "http://localhost:20969/", devInfo.BuilderUrl)
-	// assert.Equal(t, 21000, int(devInfo.SequencerApiPort))
+	assert.Equal(t, "http://localhost:23000/", devInfo.BuilderUrl)
+	assert.Equal(t, 21000, int(devInfo.SequencerApiPort))
 	// This serves as a reminder that the L1 light client address has changed when it breaks.
 	assert.Equal(t, "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0", devInfo.L1LightClientAddress)
 }

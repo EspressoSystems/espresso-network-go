@@ -139,20 +139,18 @@ func (c *Client) FetchTransactionsInBlock(ctx context.Context, blockHeight uint6
 }
 
 func (c *Client) SubmitTransaction(ctx context.Context, tx types.Transaction) (*types.TaggedBase64, error) {
-	marshalled, err := json.Marshal(tx)
+	response, err := c.tryPostRequest(ctx, c.baseUrl, tx)
 	if err != nil {
-		return nil, err
+		if c.fallBackUrl != "" {
+			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
+			responseFallBack, errFallBack := c.tryPostRequest(ctx, c.fallBackUrl, tx)
+			if errFallBack != nil {
+				return nil, err
+			}
+			response = responseFallBack
+		}
 	}
 
-	request, err := http.NewRequestWithContext(ctx, "POST", c.baseUrl+"submit/submit", bytes.NewBuffer(marshalled))
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Set("Content-Type", "application/json")
-	response, err := c.client.Do(request)
-	if err != nil {
-		return nil, err
-	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
 		return nil, fmt.Errorf("received unexpected status code: %v", response.StatusCode)
@@ -176,12 +174,12 @@ type NamespaceResponse struct {
 }
 
 func (c *Client) getRawMessage(ctx context.Context, format string, args ...any) (json.RawMessage, error) {
-	res, err := c.tryRequest(ctx, c.baseUrl, format, args...)
+	res, err := c.tryGetRequest(ctx, c.baseUrl, format, args...)
 	if err != nil {
 		// try with the fallback url
 		if c.fallBackUrl != "" {
 			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
-			resFallBack, errFallBack := c.tryRequest(ctx, c.fallBackUrl, format, args...)
+			resFallBack, errFallBack := c.tryGetRequest(ctx, c.fallBackUrl, format, args...)
 			if errFallBack != nil {
 				return nil, err
 			}
@@ -220,13 +218,12 @@ func (c *Client) get(ctx context.Context, out any, format string, args ...any) e
 	return nil
 }
 
-func (c *Client) tryRequest(ctx context.Context, baseUrl, format string, args ...interface{}) (*http.Response, error) {
+func (c *Client) tryGetRequest(ctx context.Context, baseUrl, format string, args ...interface{}) (*http.Response, error) {
 
 	url := baseUrl + fmt.Sprintf(format, args...)
 	// We will try to connect with the url for 5 seconds, if the connection fails
 	// we will return the error
 	deadline := time.Now().Add(5 * time.Second)
-	fmt.Printf("Trying with url %s", url)
 	var lastErr error
 	for {
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -234,6 +231,45 @@ func (c *Client) tryRequest(ctx context.Context, baseUrl, format string, args ..
 			return nil, err
 		}
 		res, err := c.client.Do(req)
+		if err == nil {
+			return res, nil
+		}
+
+		// It only returns an error if  caused by client policy (such as CheckRedirect),
+		// or failure to speak HTTP (such as a network connectivity problem). A non-2xx status code doesn't cause an error.
+		lastErr = err
+
+		if time.Now().After(deadline) {
+			break
+		}
+
+		// Wait a bit before retrying
+		select {
+		case <-time.After(1 * time.Second):
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+	}
+
+	return nil, lastErr
+}
+
+func (c *Client) tryPostRequest(ctx context.Context, baseUrl string, tx types.Transaction) (*http.Response, error) {
+
+	marshalled, err := json.Marshal(tx)
+	if err != nil {
+		return nil, err
+	}
+
+	deadline := time.Now().Add(5 * time.Second)
+	var lastErr error
+	for {
+		request, err := http.NewRequestWithContext(ctx, "POST", baseUrl+"submit/submit", bytes.NewBuffer(marshalled))
+		if err != nil {
+			return nil, err
+		}
+		request.Header.Set("Content-Type", "application/json")
+		res, err := c.client.Do(request)
 		if err == nil {
 			return res, nil
 		}

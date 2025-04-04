@@ -151,8 +151,6 @@ func TestFetchWithMajority(t *testing.T) {
 	assert.Equal(t, header1.Header.Commit(), resultHeader.Header.Commit())
 }
 
-// TODO: Fix the submit API
-
 func TestApiWithSingleEspressoDevNode(t *testing.T) {
 	ctx := context.Background()
 	cleanup := runEspresso()
