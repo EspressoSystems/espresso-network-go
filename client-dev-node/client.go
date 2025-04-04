@@ -10,17 +10,19 @@ import (
 )
 
 type Client struct {
-	baseUrl string
-	client  *http.Client
+	baseUrl     string
+	fallBackUrl string
+	client      *http.Client
 }
 
-func NewClient(url string) *Client {
+func NewClient(url string, fallBackurl string) *Client {
 	if !strings.HasSuffix(url, "/") {
 		url += "/"
 	}
 	return &Client{
-		baseUrl: url,
-		client:  http.DefaultClient,
+		baseUrl:     url,
+		fallBackUrl: fallBackurl,
+		client:      http.DefaultClient,
 	}
 }
 

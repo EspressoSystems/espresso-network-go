@@ -21,71 +21,26 @@ func TestApiWithEspressoDevNode(t *testing.T) {
 		t.Fatal("failed to start espresso dev node", err)
 	}
 
-	client := NewClient("http://localhost:21000")
+	client := NewClient("http://localhost:21000", "http://localhost:21000/v1")
 
 	blockHeight, err := client.FetchLatestBlockHeight(ctx)
 	if err != nil {
 		t.Fatal("failed to fetch block height")
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	ticker := time.NewTicker(1 * time.Second) // Retry every 1s
-	defer ticker.Stop()
-
-	for {
-		_, err = client.FetchHeaderByHeight(ctx, blockHeight)
-		if err == nil {
-			break // Success
-		}
-
-		select {
-		case <-ctx.Done():
-			t.Fatal("timeout after 30s, last error:", err)
-		case <-ticker.C:
-			continue // Retry
-		}
+	_, err = client.FetchHeaderByHeight(ctx, blockHeight)
+	if err != nil {
+		t.Fatal("failed to fetch header by height", err)
 	}
 
-	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	ticker = time.NewTicker(1 * time.Second) // Retry every 1s
-	defer ticker.Stop()
-
-	for {
-		_, err = client.FetchVidCommonByHeight(ctx, blockHeight)
-		if err == nil {
-			break // Success
-		}
-
-		select {
-		case <-ctx.Done():
-			t.Fatal("timeout after 30s, last error:", err)
-		case <-ticker.C:
-			continue // Retry
-		}
+	_, err = client.FetchVidCommonByHeight(ctx, blockHeight)
+	if err != nil {
+		t.Fatal("failed to fetch vid common by height", err)
 	}
 
-	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	ticker = time.NewTicker(1 * time.Second) // Retry every 1s
-	defer ticker.Stop()
-
-	for {
-		_, err = client.FetchHeadersByRange(ctx, 1, 1)
-		if err == nil {
-			break // Success
-		}
-
-		select {
-		case <-ctx.Done():
-			t.Fatal("timeout after 30s, last error:", err)
-		case <-ticker.C:
-			continue // Retry
-		}
+	_, err = client.FetchHeadersByRange(ctx, 1, 1)
+	if err != nil {
+		t.Fatal("failed to fetch headers by range", err)
 	}
 
 }

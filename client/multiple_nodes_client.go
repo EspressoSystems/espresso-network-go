@@ -25,7 +25,7 @@ type MultipleNodesClient struct {
 func NewMultipleNodesClient(urls []string) *MultipleNodesClient {
 	nodes := make([]*Client, len(urls))
 	for i, url := range urls {
-		nodes[i] = NewClient(url)
+		nodes[i] = NewClient(url, url+"/v1")
 	}
 	return &MultipleNodesClient{nodes: nodes}
 }
