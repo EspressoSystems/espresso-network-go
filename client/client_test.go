@@ -2,10 +2,12 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"os/exec"
 	"testing"
 	"time"
 
+	types "github.com/EspressoSystems/espresso-network-go/types"
 	"github.com/ethereum/go-ethereum/log"
 )
 
@@ -21,7 +23,7 @@ func TestApiWithEspressoDevNode(t *testing.T) {
 		t.Fatal("failed to start espresso dev node", err)
 	}
 
-	client := NewClient("http://localhost:22000", "http://localhost:21000")
+	client := NewClient("http://localhost:21", "http://localhost:21000")
 
 	_, err = client.FetchLatestBlockHeight(ctx)
 	if err != nil {
@@ -43,6 +45,17 @@ func TestApiWithEspressoDevNode(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed to fetch headers by range", err)
 	}
+
+	// Try submitting a transaction
+	tx := types.Transaction{
+		Namespace: 1,
+		Payload:   []byte("hello world"),
+	}
+	hash, err := client.SubmitTransaction(ctx, tx)
+	if err != nil {
+		t.Fatal("failed to submit transaction", err)
+	}
+	fmt.Println("submitted transaction with hash", hash)
 
 }
 
@@ -109,6 +122,6 @@ func waitForEspressoNode(ctx context.Context) error {
 		return err
 	}
 	// Wait a bit for dev node to be ready totally
-	time.Sleep(1 * time.Minute)
+	time.Sleep(2 * time.Minute)
 	return nil
 }
