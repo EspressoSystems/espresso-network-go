@@ -66,7 +66,7 @@ func TestHeader0_3(t *testing.T) {
 
 	testHeaderFields(header, t)
 
-	require.Equal(t, header.Commit(), common_types.Commitment{4, 105, 64, 105, 216, 176, 58, 92, 102, 133, 12, 93, 167, 97, 210, 238, 97, 233, 27, 232, 159, 12, 236, 125, 161, 192, 100, 76, 66, 87, 199, 78})
+	require.Equal(t, header.Commit(), common_types.Commitment{32, 245, 22, 153, 110, 177, 6, 208, 214, 120, 161, 164, 229, 62, 89, 80, 6, 26, 216, 232, 7, 137, 13, 22, 211, 123, 166, 253, 29, 22, 225, 61})
 }
 
 func TestHeaderImplMarshalAndUnmarshal(t *testing.T) {

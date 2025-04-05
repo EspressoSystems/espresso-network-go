@@ -22,10 +22,10 @@ type MultipleNodesClient struct {
 	nodes []*Client
 }
 
-func NewMultipleNodesClient(urls []string) *MultipleNodesClient {
+func NewMultipleNodesClient(urls []string, fallBackUrls []string) *MultipleNodesClient {
 	nodes := make([]*Client, len(urls))
 	for i, url := range urls {
-		nodes[i] = NewClient(url)
+		nodes[i] = NewClient(url, fallBackUrls[i])
 	}
 	return &MultipleNodesClient{nodes: nodes}
 }

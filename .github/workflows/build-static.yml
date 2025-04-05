@@ -32,6 +32,9 @@ jobs:
         with:
           toolchain: "1.81.0"
           targets: ${{ matrix.target }}
+      
+      - name: Add Rust target
+        run: rustup target add ${{ matrix.target }}
 
       - name: Set Enviornment
         # Install tools and set environment variables like this example

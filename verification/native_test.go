@@ -72,7 +72,7 @@ func TestNamespaceProofVerification(t *testing.T) {
 	var data namespaceProofTestData
 
 	if err := json.Unmarshal(bytes, &data); err != nil {
-		log.Fatalf("Failed to unmarshal the test data")
+		log.Fatalf("Failed to unmarshal the test data: %v", err)
 	}
 
 	r := verifyNamespace(data.Namespace, data.NsProof, data.VidCommit, data.NsTable, data.TxCommit, data.VidCommon)
