@@ -44,10 +44,6 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 		t.Fatalf("Failed to unmarshal: %v", err)
 	}
 
-	fmt.Println(header.Header.GetPayloadCommitment())
-	fmt.Println(header.Header.GetNsTable())
-	fmt.Println(vidCommon)
-
 	success := VerifyNamespace(
 		412346,
 		res.Proof,
