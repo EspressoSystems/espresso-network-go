@@ -10,12 +10,12 @@ import (
 )
 
 type ChainConfig struct {
-	ChainId      common_types.U256Decimal `json:"chain_id"`
-	MaxBlockSize common_types.U256Decimal `json:"max_block_size"`
-	BaseFee      common_types.U256Decimal `json:"base_fee"`
-	FeeContract  *common.Address          `json:"fee_contract"`
-	FeeRecipient common.Address           `json:"fee_recipient"`
-	BidRecipient *common.Address          `json:"bid_recipient"`
+	ChainId            common_types.U256Decimal `json:"chain_id"`
+	MaxBlockSize       common_types.U256Decimal `json:"max_block_size"`
+	BaseFee            common_types.U256Decimal `json:"base_fee"`
+	FeeContract        *common.Address          `json:"fee_contract"`
+	FeeRecipient       common.Address           `json:"fee_recipient"`
+	StakeTableContract *common.Address          `json:"stake_table_contract"`
 }
 
 func (self *ChainConfig) Commit() common_types.Commitment {
@@ -30,8 +30,8 @@ func (self *ChainConfig) Commit() common_types.Commitment {
 		builder.Uint64Field("fee_contract", 0)
 	}
 
-	if self.BidRecipient != nil {
-		builder.FixedSizeField("bid_recipient", self.BidRecipient.Bytes())
+	if self.StakeTableContract != nil {
+		builder.FixedSizeField("stake_table_contract", self.StakeTableContract.Bytes())
 	}
 	return builder.Finalize()
 }
