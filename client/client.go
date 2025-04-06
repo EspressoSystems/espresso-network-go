@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"time"
 
 	types "github.com/EspressoSystems/espresso-network-go/types"
 	common "github.com/EspressoSystems/espresso-network-go/types/common"
@@ -221,37 +220,14 @@ func (c *Client) get(ctx context.Context, out any, format string, args ...any) e
 func (c *Client) tryGetRequest(ctx context.Context, baseUrl, format string, args ...interface{}) (*http.Response, error) {
 
 	url := baseUrl + fmt.Sprintf(format, args...)
-	// We will try to connect with the url for 5 seconds, if the connection fails
-	// we will return the error
-	deadline := time.Now().Add(5 * time.Second)
-	var lastErr error
-	for {
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-		if err != nil {
-			return nil, err
-		}
-		res, err := c.client.Do(req)
-		if err == nil {
-			return res, nil
-		}
 
-		// It only returns an error if  caused by client policy (such as CheckRedirect),
-		// or failure to speak HTTP (such as a network connectivity problem). A non-2xx status code doesn't cause an error.
-		lastErr = err
-
-		if time.Now().After(deadline) {
-			break
-		}
-
-		// Wait a bit before retrying
-		select {
-		case <-time.After(1 * time.Second):
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
 	}
+	c.client.Do(req)
+	return c.client.Do(req)
 
-	return nil, lastErr
 }
 
 func (c *Client) tryPostRequest(ctx context.Context, baseUrl string, tx types.Transaction) (*http.Response, error) {
@@ -261,34 +237,10 @@ func (c *Client) tryPostRequest(ctx context.Context, baseUrl string, tx types.Tr
 		return nil, err
 	}
 
-	deadline := time.Now().Add(5 * time.Second)
-	var lastErr error
-	for {
-		request, err := http.NewRequestWithContext(ctx, "POST", baseUrl+"submit/submit", bytes.NewBuffer(marshalled))
-		if err != nil {
-			return nil, err
-		}
-		request.Header.Set("Content-Type", "application/json")
-		res, err := c.client.Do(request)
-		if err == nil {
-			return res, nil
-		}
-
-		// It only returns an error if  caused by client policy (such as CheckRedirect),
-		// or failure to speak HTTP (such as a network connectivity problem). A non-2xx status code doesn't cause an error.
-		lastErr = err
-
-		if time.Now().After(deadline) {
-			break
-		}
-
-		// Wait a bit before retrying
-		select {
-		case <-time.After(1 * time.Second):
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		}
+	request, err := http.NewRequestWithContext(ctx, "POST", baseUrl+"submit/submit", bytes.NewBuffer(marshalled))
+	if err != nil {
+		return nil, err
 	}
-
-	return nil, lastErr
+	request.Header.Set("Content-Type", "application/json")
+	return c.client.Do(request)
 }

@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type Client struct {
@@ -94,36 +93,11 @@ func (c *Client) get(ctx context.Context, out any, format string, args ...any) e
 func (c *Client) tryRequest(ctx context.Context, baseUrl, format string, args ...interface{}) (*http.Response, error) {
 
 	url := baseUrl + fmt.Sprintf(format, args...)
-	// We will try to connect with the url for 5 seconds, if the connection fails
-	// we will return the error
-	deadline := time.Now().Add(5 * time.Second)
-	fmt.Printf("Trying with url %s", url)
-	var lastErr error
-	for {
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-		if err != nil {
-			return nil, err
-		}
-		res, err := c.client.Do(req)
-		if err == nil {
-			return res, nil
-		}
 
-		// It only returns an error if  caused by client policy (such as CheckRedirect),
-		// or failure to speak HTTP (such as a network connectivity problem). A non-2xx status code doesn't cause an error.
-		lastErr = err
-
-		if time.Now().After(deadline) {
-			break
-		}
-
-		// Wait a bit before retrying
-		select {
-		case <-time.After(1 * time.Second):
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
 	}
-
-	return nil, lastErr
+	c.client.Do(req)
+	return c.client.Do(req)
 }
