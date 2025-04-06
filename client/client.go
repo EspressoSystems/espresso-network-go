@@ -225,7 +225,6 @@ func (c *Client) tryGetRequest(ctx context.Context, baseUrl, format string, args
 	if err != nil {
 		return nil, err
 	}
-	c.client.Do(req)
 	return c.client.Do(req)
 
 }
