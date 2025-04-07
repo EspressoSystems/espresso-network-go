@@ -20,7 +20,7 @@ type Header struct {
 	BlockMerkleTreeRoot  *common_types.TaggedBase64 `json:"block_merkle_tree_root"`
 	FeeMerkleTreeRoot    *common_types.TaggedBase64 `json:"fee_merkle_tree_root"`
 	FeeInfo              *common_types.FeeInfo      `json:"fee_info"`
-	BuilderSignature     *common_types.Signature    `json:"builder_signature"`
+	BuilderSignature     *common_types.Signature    `json:"builder_signature"  rlp:"nil"`
 	RewardMerkleTreeRoot *common_types.TaggedBase64 `json:"reward_merkle_tree_root"`
 }
 
@@ -78,7 +78,6 @@ func (h *Header) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &dec); err != nil {
 		return err
 	}
-
 	if dec.Height == nil {
 		return fmt.Errorf("Field height of type Header is required")
 	}
