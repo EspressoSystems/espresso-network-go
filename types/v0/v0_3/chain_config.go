@@ -31,7 +31,7 @@ func (self *ChainConfig) Commit() common_types.Commitment {
 	}
 
 	if self.StakeTableContract != nil {
-		builder.FixedSizeField("stake_table_contract", self.StakeTableContract.Bytes())
+		builder.Uint64Field("stake_table_contract", 1).FixedSizeBytes(self.StakeTableContract.Bytes())
 	}
 	return builder.Finalize()
 }
