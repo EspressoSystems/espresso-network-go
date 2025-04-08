@@ -9,19 +9,19 @@ import (
 )
 
 type Header struct {
-	ChainConfig         *ResolvableChainConfig     `json:"chain_config"`
-	Height              uint64                     `json:"height"`
-	Timestamp           uint64                     `json:"timestamp"`
-	L1Head              uint64                     `json:"l1_head"`
-	L1Finalized         *common_types.L1BlockInfo  `json:"l1_finalized"           rlp:"nil"`
-	PayloadCommitment   *common_types.TaggedBase64 `json:"payload_commitment"`
-	BuilderCommitment   *common_types.TaggedBase64 `json:"builder_commitment"`
-	NsTable             *common_types.NsTable      `json:"ns_table"`
-	BlockMerkleTreeRoot *common_types.TaggedBase64 `json:"block_merkle_tree_root"`
-	FeeMerkleTreeRoot   *common_types.TaggedBase64 `json:"fee_merkle_tree_root"`
-	FeeInfo             *[]common_types.FeeInfo    `json:"fee_info"`
-	BuilderSignature    *[]common_types.Signature  `json:"builder_signature"`
-	AuctionResults      *SolverAuctionResults      `json:"auction_results"`
+	ChainConfig          *ResolvableChainConfig     `json:"chain_config"`
+	Height               uint64                     `json:"height"`
+	Timestamp            uint64                     `json:"timestamp"`
+	L1Head               uint64                     `json:"l1_head"`
+	L1Finalized          *common_types.L1BlockInfo  `json:"l1_finalized"           rlp:"nil"`
+	PayloadCommitment    *common_types.TaggedBase64 `json:"payload_commitment"`
+	BuilderCommitment    *common_types.TaggedBase64 `json:"builder_commitment"`
+	NsTable              *common_types.NsTable      `json:"ns_table"`
+	BlockMerkleTreeRoot  *common_types.TaggedBase64 `json:"block_merkle_tree_root"`
+	FeeMerkleTreeRoot    *common_types.TaggedBase64 `json:"fee_merkle_tree_root"`
+	FeeInfo              *common_types.FeeInfo      `json:"fee_info"`
+	BuilderSignature     *common_types.Signature    `json:"builder_signature"  rlp:"nil"`
+	RewardMerkleTreeRoot *common_types.TaggedBase64 `json:"reward_merkle_tree_root"`
 }
 
 func (h *Header) Version() common_types.Version {
@@ -53,28 +53,31 @@ func (h *Header) GetFeeMerkleTreeRoot() *common_types.TaggedBase64 {
 	return h.FeeMerkleTreeRoot
 }
 
+func (h *Header) GetRewardMerkleTreeRoot() *common_types.TaggedBase64 {
+	return h.RewardMerkleTreeRoot
+}
+
 func (h *Header) UnmarshalJSON(b []byte) error {
 	type Dec struct {
-		ChainConfig         **ResolvableChainConfig     `json:"chain_config"`
-		Height              *uint64                     `json:"height"`
-		Timestamp           *uint64                     `json:"timestamp"`
-		L1Head              *uint64                     `json:"l1_head"`
-		L1Finalized         *common_types.L1BlockInfo   `json:"l1_finalized"           rlp:"nil"`
-		PayloadCommitment   **common_types.TaggedBase64 `json:"payload_commitment"`
-		BuilderCommitment   **common_types.TaggedBase64 `json:"builder_commitment"`
-		NsTable             **common_types.NsTable      `json:"ns_table"`
-		BlockMerkleTreeRoot **common_types.TaggedBase64 `json:"block_merkle_tree_root"`
-		FeeMerkleTreeRoot   **common_types.TaggedBase64 `json:"fee_merkle_tree_root"`
-		FeeInfo             **[]common_types.FeeInfo    `json:"fee_info"`
-		BuilderSignature    *[]common_types.Signature   `json:"builder_signature"`
-		AuctionResults      **SolverAuctionResults      `json:"auction_results"`
+		ChainConfig          **ResolvableChainConfig     `json:"chain_config"`
+		Height               *uint64                     `json:"height"`
+		Timestamp            *uint64                     `json:"timestamp"`
+		L1Head               *uint64                     `json:"l1_head"`
+		L1Finalized          *common_types.L1BlockInfo   `json:"l1_finalized"           rlp:"nil"`
+		PayloadCommitment    **common_types.TaggedBase64 `json:"payload_commitment"`
+		BuilderCommitment    **common_types.TaggedBase64 `json:"builder_commitment"`
+		NsTable              **common_types.NsTable      `json:"ns_table"`
+		BlockMerkleTreeRoot  **common_types.TaggedBase64 `json:"block_merkle_tree_root"`
+		FeeMerkleTreeRoot    **common_types.TaggedBase64 `json:"fee_merkle_tree_root"`
+		FeeInfo              **common_types.FeeInfo      `json:"fee_info"`
+		BuilderSignature     *common_types.Signature     `json:"builder_signature"`
+		RewardMerkleTreeRoot **common_types.TaggedBase64 `json:"reward_merkle_tree_root"`
 	}
 
 	var dec Dec
 	if err := json.Unmarshal(b, &dec); err != nil {
 		return err
 	}
-
 	if dec.Height == nil {
 		return fmt.Errorf("Field height of type Header is required")
 	}
@@ -110,6 +113,11 @@ func (h *Header) UnmarshalJSON(b []byte) error {
 	}
 	h.BlockMerkleTreeRoot = *dec.BlockMerkleTreeRoot
 
+	if dec.RewardMerkleTreeRoot == nil {
+		return fmt.Errorf("Field reward_merkle_tree_root of type Header is required")
+	}
+	h.RewardMerkleTreeRoot = *dec.RewardMerkleTreeRoot
+
 	if dec.FeeMerkleTreeRoot == nil {
 		return fmt.Errorf("Field fee_merkle_tree_root of type Header is required")
 	}
@@ -128,10 +136,6 @@ func (h *Header) UnmarshalJSON(b []byte) error {
 	h.L1Finalized = dec.L1Finalized
 	h.BuilderSignature = dec.BuilderSignature
 
-	if dec.AuctionResults == nil {
-		return fmt.Errorf("Field auction_results of type Header is required")
-	}
-	h.AuctionResults = *dec.AuctionResults
 	return nil
 }
 
@@ -140,11 +144,6 @@ func (self *Header) Commit() common_types.Commitment {
 	if self.L1Finalized != nil {
 		comm := self.L1Finalized.Commit()
 		l1FinalizedComm = &comm
-	}
-
-	var feeInfoComms []common_types.Commitment
-	for _, feeInfo := range *self.FeeInfo {
-		feeInfoComms = append(feeInfoComms, feeInfo.Commit())
 	}
 
 	comm := common_types.NewRawCommitmentBuilder("BLOCK").
@@ -160,8 +159,8 @@ func (self *Header) Commit() common_types.Commitment {
 		Field("ns_table", self.NsTable.Commit()).
 		VarSizeField("block_merkle_tree_root", self.BlockMerkleTreeRoot.Value()).
 		VarSizeField("fee_merkle_tree_root", self.FeeMerkleTreeRoot.Value()).
-		ArrayField("fee_info", feeInfoComms).
-		Field("auction_results", self.AuctionResults.Commit()).
+		Field("fee_info", self.FeeInfo.Commit()).
+		VarSizeField("reward_merkle_tree_root", self.RewardMerkleTreeRoot.Value()).
 		Finalize()
 
 	return common.NewRawCommitmentBuilder("BLOCK").

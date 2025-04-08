@@ -10,17 +10,22 @@ import (
 )
 
 type Client struct {
-	baseUrl string
-	client  *http.Client
+	baseUrl     string
+	fallBackUrl string
+	client      *http.Client
 }
 
-func NewClient(url string) *Client {
+func NewClient(url string, fallBackurl string) *Client {
 	if !strings.HasSuffix(url, "/") {
 		url += "/"
 	}
+	if !strings.HasSuffix(fallBackurl, "/") {
+		fallBackurl += "/"
+	}
 	return &Client{
-		baseUrl: url,
-		client:  http.DefaultClient,
+		baseUrl:     url,
+		fallBackUrl: fallBackurl,
+		client:      http.DefaultClient,
 	}
 }
 
@@ -41,16 +46,19 @@ func (c *Client) FetchDevInfo(ctx context.Context) (DevInfo, error) {
 }
 
 func (c *Client) getRawMessage(ctx context.Context, format string, args ...any) (json.RawMessage, error) {
-	url := c.baseUrl + fmt.Sprintf(format, args...)
+	res, err := c.tryRequest(ctx, c.baseUrl, format, args...)
+	if err != nil {
+		// try with the fallback url
+		if c.fallBackUrl != "" {
+			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
+			resFallBack, errFallBack := c.tryRequest(ctx, c.fallBackUrl, format, args...)
+			if errFallBack != nil {
+				return nil, err
+			}
+			res = resFallBack
+		}
+	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	res, err := c.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
@@ -80,4 +88,15 @@ func (c *Client) get(ctx context.Context, out any, format string, args ...any) e
 		return fmt.Errorf("request failed with body %s and error %v", string(body), err)
 	}
 	return nil
+}
+
+func (c *Client) tryRequest(ctx context.Context, baseUrl, format string, args ...interface{}) (*http.Response, error) {
+
+	url := baseUrl + fmt.Sprintf(format, args...)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	return c.client.Do(req)
 }

@@ -1,0 +1,11 @@
+{
+  "height": 68,
+  "block_hash": "BLOCK~NTC-iZnL24ZnVvafRGgRXPZBf8lk1c9brmyypkLvZw1w",
+  "payload_hash": "AvidMCommit~_XzZmcD4SBEN0C-D0JgV97LPCN9-zYBzCDbRYs71-KGl",
+  "common": {
+    "V1": {
+      "total_weights": 2,
+      "recovery_threshold": 1
+    }
+  }
+}
