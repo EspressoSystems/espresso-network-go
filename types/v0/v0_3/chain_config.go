@@ -22,7 +22,7 @@ func (self *ChainConfig) Commit() common_types.Commitment {
 	builder := common_types.NewRawCommitmentBuilder("CHAIN_CONFIG").
 		Uint256Field("chain_id", self.ChainId.ToU256()).
 		Uint64Field("max_block_size", self.MaxBlockSize.Uint64()).
-		Uint64Field("base_fee", self.BaseFee.Uint64()).
+		Uint256Field("base_fee", self.BaseFee.ToU256()).
 		FixedSizeField("fee_recipient", self.FeeRecipient.Bytes())
 	if self.FeeContract != nil {
 		builder.Uint64Field("fee_contract", 1).FixedSizeBytes(self.FeeContract.Bytes())
