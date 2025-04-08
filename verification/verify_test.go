@@ -2,7 +2,6 @@ package verification
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"testing"
@@ -24,7 +23,6 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 	for _, tx := range res.Transactions {
 		txes = append(txes, tx.Payload)
 	}
-	fmt.Println(txes)
 
 	vidCommonBytes, err := readResponse("./resp/vid_common.json")
 	if err != nil {
