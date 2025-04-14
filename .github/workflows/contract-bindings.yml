@@ -21,24 +21,23 @@ jobs:
           all_but_latest: true
           access_token: ${{ github.token }}
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v30
+      - name: Install abigen
+        uses: gacts/install-geth-tools@v1
 
-      - name: Enable Cachix
-        uses: cachix/cachix-action@v15
-        continue-on-error: true
-        with:
-          name: espresso-systems-private
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-          extraPullNames: nix-community
-          skipPush: ${{ github.actor == 'dependabot[bot]' }}
+      - name: Version Check
+        run: |
+          abigen --version
+
+      - name: Install Just
+        run: |
+          wget https://github.com/casey/just/releases/download/1.14.0/just-1.14.0-x86_64-unknown-linux-musl.tar.gz
+          tar -vxf just-1.14.0-x86_64-unknown-linux-musl.tar.gz just
+          sudo cp just /usr/bin/just
 
       - uses: actions/checkout@v4
         name: Checkout Repository
-        with:
-          submodules: recursive
 
       - name: Generate Bindings
         run: |
-          nix develop --accept-flake-config -c just bind-light-client
+          just bind-light-client
           git diff --exit-code
