@@ -7,19 +7,16 @@
   inputs.flake-compat.flake = false;
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
   inputs.foundry.url = "github:shazow/foundry.nix/monthly";
-  inputs.solc-bin.url = "github:EspressoSystems/nix-solc-bin";
 
-  outputs = { flake-utils, nixpkgs, foundry, rust-overlay, solc-bin, ... }:
+  outputs = { flake-utils, nixpkgs, foundry, rust-overlay, ... }:
     let
-      goVersion = 23; # Change this to update the whole stack
+      goVersion = 22; # Change this to update the whole stack
       overlays = [
         (import rust-overlay)
-        foundry.overlay
         (final: prev: rec {
           go = prev."go_1_${toString goVersion}";
         })
         foundry.overlay
-        solc-bin.overlays.default
       ];
     in
     flake-utils.lib.eachDefaultSystem (system:
@@ -63,11 +60,8 @@
       {
         devShells =
           {
-            default = let
-              # mkShell brings in a `cc` that points to gcc, stdenv.mkDerivation from llvm avoids this.
-              llvmPkgs = pkgs.llvmPackages_16;
-              solc = pkgs.solc-bin."0.8.28";
-            in llvmPkgs.stdenv.mkDerivation {
+            # mkShell brings in a `cc` that points to gcc, stdenv.mkDerivation from llvm avoids this.
+            default = let llvmPkgs = pkgs.llvmPackages_16; in llvmPkgs.stdenv.mkDerivation {
               hardeningDisable = [
                 # By default stack protection is enabled by the clang wrapper but I
                 # think it's not supported for wasm compilation. It causes this
@@ -106,8 +100,6 @@
                 jq
                 just
 
-                solc
-
                 # provides abigen
                 go-ethereum
               ] ++ lib.optionals stdenv.isDarwin [
@@ -132,7 +124,6 @@
                 ''
                   export NIX_LDFLAGS="-framework SystemConfiguration $NIX_LDFLAGS"
                 '';
-              FOUNDRY_SOLC = "${solc}/bin/solc";
             };
           };
       });

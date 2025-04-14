@@ -1,6 +1,6 @@
 module github.com/EspressoSystems/espresso-network-go
 
-go 1.23
+go 1.22
 
 require (
 	github.com/benbjohnson/clock v1.3.5
