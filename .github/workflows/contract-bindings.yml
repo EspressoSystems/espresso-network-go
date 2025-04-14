@@ -24,7 +24,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: v0.3.0
+          version: nightly
 
       - name: Install abigen
         uses: gacts/install-geth-tools@v1
