@@ -12,11 +12,8 @@ test:
 	fi
 
 bind-light-client:
-	cd espresso-network/contracts && forge build --force
-	cd espresso-network/contracts/out/LightClient.sol && cat LightClient.json | jq .abi > LightClient.abi
-	cd espresso-network/contracts/out/LightClientMock.sol && cat LightClientMock.json | jq .abi > LightClientMock.abi
-	abigen --abi espresso-network/contracts/out/LightClient.sol/LightClient.abi --pkg lightclient --out light-client/lightclient.go
-	abigen --abi espresso-network/contracts/out/LightClientMock.sol/LightClientMock.abi --pkg lightclientmock --out light-client-mock/lightclient.go
+	abigen --abi espresso-contract-artifacts/LightClient.json --pkg lightclient --out light-client/lightclient.go
+	abigen --abi espresso-contract-artifacts/LightClientMock.json --pkg lightclientmock --out light-client-mock/lightclient.go
 
 verification_dir := "./verification/rust"
 target_lib := "./target/lib"
