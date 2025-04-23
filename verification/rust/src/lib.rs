@@ -116,7 +116,7 @@ pub extern "C" fn verify_namespace_helper(
 
     let commit_str = handle_result!(std::str::from_utf8(commit_bytes));
     let txn_comm_str = handle_result!(std::str::from_utf8(tx_comm_bytes));
-    let serde_result:Result<NsProof, serde_json::Error > = serde_json::from_slice(proof_bytes);
+    let serde_result: Result<NsProof, serde_json::Error > = serde_json::from_slice(proof_bytes);
     println!("serde_json result for ns_proof {:?}", serde_result);
     let proof: NsProof = handle_result!(serde_json::from_slice(proof_bytes));
     let ns_table: NsTable = NsTable::from_bytes_unchecked(ns_table_bytes);
@@ -126,7 +126,7 @@ pub extern "C" fn verify_namespace_helper(
     let verify_result = proof.verify(&ns_table, &commit, &vid_common);
     println!("verify_result {:?}", verify_result);
     let (txns, ns) = handle_result!(proof.verify(&ns_table, &commit, &vid_common).ok_or(()));
-
+    
     let namespace: u32 = handle_result!(namespace.try_into());
     let txns_comm = hash_txns(namespace, &txns);
 
@@ -156,14 +156,14 @@ pub fn field_to_u256<F: PrimeField>(f: F) -> U256 {
 
 fn slice_from_raw_parts<'a>(ptr: *const u8, len: usize) -> Result<&'a [u8], String> {
     if ptr.is_null() {
-        return Err(String::from_str("ptr is null")?);
+        return Err(String::from_str("ptr is null").unwrap());
     }
     if !ptr.is_aligned() {
-        return Err(String::from_str("ptr is not aligned")?);
+        return Err(String::from_str("ptr is not aligned").unwrap());
     }
     // Check if the range overflows
     if usize::MAX - (ptr as usize) < len {
-        return Err(String::from_str("range overflow"));
+        return Err(String::from_str("range overflow").unwrap());
     }
     Ok(unsafe { std::slice::from_raw_parts(ptr, len) })
 }
