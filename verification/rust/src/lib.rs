@@ -20,7 +20,10 @@ macro_rules! handle_result {
     ($result:expr) => {
         match $result {
             Ok(value) => value,
-            Err(_) => return false,
+            Err(err) => {
+                println!("encountered error while handling result in rust<-go bindings {:?}", err);
+                return false
+            }
         }
     };
 }
