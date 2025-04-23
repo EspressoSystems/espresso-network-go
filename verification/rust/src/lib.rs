@@ -50,7 +50,6 @@ pub extern "C" fn verify_merkle_proof_helper(
     let block_comm_str = handle_result!(std::str::from_utf8(block_comm_bytes));
     let tagged = handle_result!(TaggedBase64::parse(&block_comm_str));
     let block_comm: BlockMerkleCommitment = handle_result!(tagged.try_into());
-
     let proof: Proof = handle_result!(serde_json::from_slice(proof_bytes));
     let header: Header = handle_result!(serde_json::from_slice(header_bytes));
     let header_comm: Commitment<Header> = header.commit();
@@ -112,13 +111,15 @@ pub extern "C" fn verify_namespace_helper(
 
     let commit_str = handle_result!(std::str::from_utf8(commit_bytes));
     let txn_comm_str = handle_result!(std::str::from_utf8(tx_comm_bytes));
-
+    let serde_result:Result<VidCommon, serde_json::Error > = serde_json::from_slice(proof_bytes);
+    println!("serde_json result for ns_proof {:?}", serde_result);
     let proof: NsProof = handle_result!(serde_json::from_slice(proof_bytes));
     let ns_table: NsTable = NsTable::from_bytes_unchecked(ns_table_bytes);
     let tagged = handle_result!(TaggedBase64::parse(&commit_str));
     let commit: VidCommitment = handle_result!(tagged.try_into());
     let vid_common: VidCommon = handle_result!(serde_json::from_slice(common_data_bytes));
-
+    let verify_result = proof.verify(&ns_table, &commit, &vid_common);
+    println!("verify_result {:?}", verify_result);
     let (txns, ns) = handle_result!(proof.verify(&ns_table, &commit, &vid_common).ok_or(()));
 
     let namespace: u32 = handle_result!(namespace.try_into());

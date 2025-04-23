@@ -10,7 +10,7 @@ import (
 )
 
 func TestVerifyNamespaceWithRealData(t *testing.T) {
-	bytes, err := readResponse("./resp/transaction_in_block.json")
+	bytes, err := readResponse("./resp/rari_namespace_header.json")
 	if err != nil {
 		t.Fatalf("Failed to read file: %v", err)
 	}
@@ -24,7 +24,7 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 		txes = append(txes, tx.Payload)
 	}
 
-	vidCommonBytes, err := readResponse("./resp/vid_common.json")
+	vidCommonBytes, err := readResponse("./resp/rari_vid_common.json")
 	if err != nil {
 		t.Fatalf("Failed to read file: %v", err)
 	}
@@ -33,7 +33,7 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 		t.Fatalf("Failed to unmarshal: %v", err)
 	}
 
-	headerBytes, err := readResponse("./resp/header.json")
+	headerBytes, err := readResponse("./resp/rari_header.json")
 	if err != nil {
 		t.Fatalf("Failed to read file: %v", err)
 	}
