@@ -1,0 +1,11 @@
+{
+    "height": 3159165,
+    "block_hash": "BLOCK~NCuff4Csr1mdpfd73unCYHloL7MTx3oNLv35alq_Nb0E",
+    "payload_hash": "AvidMCommit~anzlRML5pXo4_gkbyba4FhNmLtiRV1DbLa4IDZwqJfXF",
+    "common": {
+      "V1": {
+        "total_weights": 100,
+        "recovery_threshold": 34
+      }
+    }
+  }
