@@ -132,9 +132,9 @@ checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 
 [[package]]
 name = "alloy"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "239e728d663a3bdababa24dfdc697faec987593161c5ff54d72ee01df6721d59"
+checksum = "2b4ae82946772d69f868b9ef81fc66acb1b149ef9b4601849bec4bcf5da6552e"
 dependencies = [
  "alloy-consensus",
  "alloy-contract",
@@ -149,7 +149,6 @@ dependencies = [
  "alloy-rpc-types",
  "alloy-serde",
  "alloy-signer",
- "alloy-signer-ledger",
  "alloy-signer-local",
  "alloy-transport",
  "alloy-transport-http",
@@ -170,7 +169,7 @@ dependencies = [
 [[package]]
 name = "alloy-compat"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "ethers-core",
@@ -180,9 +179,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-consensus"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27d301f5bcfd37e3aac727c360d8b50c33ddff9169ce0370198dedda36a9927d"
+checksum = "6fbf458101ed6c389e9bb70a34ebc56039868ad10472540614816cdedc8f5265"
 dependencies = [
  "alloy-eips",
  "alloy-primitives",
@@ -203,9 +202,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-consensus-any"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f4f97a85a45965e0e4f9f5b94bbafaa3e4ee6868bdbcf2e4a9acb4b358038fe"
+checksum = "fc982af629e511292310fe85b433427fd38cb3105147632b574abc997db44c91"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -217,9 +216,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-contract"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f39e8b96c9e25dde7222372332489075f7e750e4fd3e81c11eec0939b78b71b8"
+checksum = "cd0a0c1ddee20ecc14308aae21c2438c994df7b39010c26d70f86e1d8fdb8db0"
 dependencies = [
  "alloy-consensus",
  "alloy-dyn-abi",
@@ -304,9 +303,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-eips"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10b11c382ca8075128d1ae6822b60921cf484c911d9a5831797a01218f98125f"
+checksum = "6e86967eb559920e4b9102e4cb825fe30f2e9467988353ce4809f0d3f2c90cd4"
 dependencies = [
  "alloy-eip2124",
  "alloy-eip2930",
@@ -318,15 +317,16 @@ dependencies = [
  "c-kzg",
  "derive_more 2.0.1",
  "either",
+ "once_cell",
  "serde",
  "sha2 0.10.8",
 ]
 
 [[package]]
 name = "alloy-genesis"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bd9e75c5dd40319ebbe807ebe9dfb10c24e4a70d9c7d638e62921d8dd093c8b"
+checksum = "a40de6f5b53ecf5fd7756072942f41335426d9a3704cd961f77d854739933bcf"
 dependencies = [
  "alloy-eips",
  "alloy-primitives",
@@ -362,9 +362,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-json-rpc"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbcf26d02a72e23d5bc245425ea403c93ba17d254f20f9c23556a249c6c7e143"
+checksum = "27434beae2514d4a2aa90f53832cbdf6f23e4b5e2656d95eaf15f9276e2418b6"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",
@@ -376,9 +376,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-network"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b44dd4429e190f727358571175ebf323db360a303bf4e1731213f510ced1c2e6"
+checksum = "26a33a38c7486b1945f8d093ff027add2f3a8f83c7300dbad6165cc49150085e"
 dependencies = [
  "alloy-consensus",
  "alloy-consensus-any",
@@ -402,9 +402,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-network-primitives"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86f736e1d1eb1b770dbd32919bdf46d4dcd4617f2eed07947dfb32649962baba"
+checksum = "db973a7a23cbe96f2958e5687c51ce2d304b5c6d0dc5ccb3de8667ad8476f50b"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -415,9 +415,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-node-bindings"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10f33291f6b969268b04b8f96ffab5071b3c241e593dd462372288b069787375"
+checksum = "846c2248472c3a7efa8d9d6c51af5b545a88335af0ed7a851d01debfc3b03395"
 dependencies = [
  "alloy-genesis",
  "alloy-hardforks",
@@ -464,9 +464,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-provider"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a557f9e3ec89437b06db3bfc97d20782b1f7cc55b5b602b6a82bf3f64d7efb0e"
+checksum = "8b03bde77ad73feae14aa593bcabb932c8098c0f0750ead973331cfc0003a4e1"
 dependencies = [
  "alloy-chains",
  "alloy-consensus",
@@ -480,7 +480,6 @@ dependencies = [
  "alloy-rpc-client",
  "alloy-rpc-types-anvil",
  "alloy-rpc-types-eth",
- "alloy-signer",
  "alloy-sol-types",
  "alloy-transport",
  "alloy-transport-http",
@@ -489,7 +488,6 @@ dependencies = [
  "async-trait",
  "auto_impl",
  "dashmap",
- "either",
  "futures",
  "futures-utils-wasm",
  "lru 0.13.0",
@@ -507,16 +505,15 @@ dependencies = [
 
 [[package]]
 name = "alloy-pubsub"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0a261caff6c2ec6fe1d6eb77ba41159024c8387d05e4138804a387d403def55"
+checksum = "721aca709a9231815ad5903a2d284042cc77e7d9d382696451b30c9ee0950001"
 dependencies = [
  "alloy-json-rpc",
  "alloy-primitives",
  "alloy-transport",
  "bimap",
  "futures",
- "parking_lot",
  "serde",
  "serde_json",
  "tokio",
@@ -549,9 +546,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-rpc-client"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cec6dc89c4c3ef166f9fa436d1831f8142c16cf2e637647c936a6aaaabd8d898"
+checksum = "445a3298c14fae7afb5b9f2f735dead989f3dd83020c2ab8e48ed95d7b6d1acb"
 dependencies = [
  "alloy-json-rpc",
  "alloy-primitives",
@@ -576,9 +573,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-rpc-types"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3849f8131a18cc5d7f95f301d68a6af5aa2db28ad8522fb9db1f27b3794e8b68"
+checksum = "9157deaec6ba2ad7854f16146e4cd60280e76593eed79fdcb06e0fa8b6c60f77"
 dependencies = [
  "alloy-primitives",
  "alloy-rpc-types-eth",
@@ -588,9 +585,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-rpc-types-anvil"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "19051fd5e8de7e1f95ec228c9303debd776dcc7caf8d1ece3191f711f5c06541"
+checksum = "3a80ee83ef97e7ffd667a81ebdb6154558dfd5e8f20d8249a10a12a1671a04b3"
 dependencies = [
  "alloy-primitives",
  "alloy-rpc-types-eth",
@@ -600,9 +597,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-rpc-types-any"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ecd6d480e4e6e456f30eeeb3aef1512aaecb68df2a35d1f78865dbc4d20dc0fd"
+checksum = "604dea1f00fd646debe8033abe8e767c732868bf8a5ae9df6321909ccbc99c56"
 dependencies = [
  "alloy-consensus-any",
  "alloy-rpc-types-eth",
@@ -611,9 +608,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-rpc-types-eth"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a8b6d55bdaa0c4a08650d4b32f174494cbade56adf6f2fcfa2a4f3490cb5511"
+checksum = "7e13d71eac04513a71af4b3df580f52f2b4dcbff9d971cc9a52519acf55514cb"
 dependencies = [
  "alloy-consensus",
  "alloy-consensus-any",
@@ -623,7 +620,7 @@ dependencies = [
  "alloy-rlp",
  "alloy-serde",
  "alloy-sol-types",
- "itertools 0.14.0",
+ "itertools 0.13.0",
  "serde",
  "serde_json",
  "thiserror 2.0.12",
@@ -631,9 +628,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-serde"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1824791912f468a481dedc1db50feef3e85a078f6d743a62db2ee9c2ca674882"
+checksum = "3a1cd73fc054de6353c7f22ff9b846b0f0f145cd0112da07d4119e41e9959207"
 dependencies = [
  "alloy-primitives",
  "serde",
@@ -642,9 +639,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-signer"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d087fe5aea96a93fbe71be8aaed5c57c3caac303c09e674bc5b1647990d648b"
+checksum = "c96fbde54bee943cd94ebacc8a62c50b38c7dfd2552dcd79ff61aea778b1bfcc"
 dependencies = [
  "alloy-primitives",
  "async-trait",
@@ -656,28 +653,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "alloy-signer-ledger"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4224cd9c7b8107b1f7973361e81cf75e20a99835bcdc6ba7ac8ea50a6256e47"
-dependencies = [
- "alloy-consensus",
- "alloy-network",
- "alloy-primitives",
- "alloy-signer",
- "async-trait",
- "coins-ledger",
- "futures-util",
- "semver 1.0.26",
- "thiserror 2.0.12",
- "tracing",
-]
-
-[[package]]
 name = "alloy-signer-local"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2940353d2425bb75965cd5101075334e6271051e35610f903bf8099a52b0b1a9"
+checksum = "cc6e72002cc1801d8b41e9892165e3a6551b7bd382bd9d0414b21e90c0c62551"
 dependencies = [
  "alloy-consensus",
  "alloy-network",
@@ -767,9 +746,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-transport"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6818b4c82a474cc01ac9e88ccfcd9f9b7bc893b2f8aea7e890a28dcd55c0a7aa"
+checksum = "9aec325c2af8562ef355c02aeb527c755a07e9d8cf6a1e65dda8d0bf23e29b2c"
 dependencies = [
  "alloy-json-rpc",
  "base64 0.22.1",
@@ -789,9 +768,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-transport-http"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cc3079a33483afa1b1365a3add3ea3e21c75b10f704870198ba7846627d10f2"
+checksum = "a082c9473c6642cce8b02405a979496126a03b096997888e86229afad05db06c"
 dependencies = [
  "alloy-json-rpc",
  "alloy-transport",
@@ -804,9 +783,9 @@ dependencies = [
 
 [[package]]
 name = "alloy-transport-ws"
-version = "0.13.0"
+version = "0.12.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ef7a4301e8967c1998f193755fd9429e0ca81730e2e134e30c288c43dbf96f0"
+checksum = "ae865917bdabaae21f418010fe7e8837c6daa6611fde25f8d78a1778d6ecb523"
 dependencies = [
  "alloy-pubsub",
  "alloy-transport",
@@ -2106,11 +2085,10 @@ dependencies = [
 
 [[package]]
 name = "c-kzg"
-version = "2.1.0"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e7e3c397401eb76228c89561cf22f85f41c95aa799ee9d860de3ea1cbc728fc"
+checksum = "f0307f72feab3300336fb803a57134159f6e20139af1357f36c54cb90d8e8928"
 dependencies = [
- "arbitrary",
  "blst",
  "cc",
  "glob",
@@ -2468,29 +2446,6 @@ dependencies = [
  "sha2 0.10.8",
  "sha3",
  "thiserror 1.0.69",
-]
-
-[[package]]
-name = "coins-ledger"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab9bc0994d0aa0f4ade5f3a9baf4a8d936f250278c85a1124b401860454246ab"
-dependencies = [
- "async-trait",
- "byteorder",
- "cfg-if",
- "const-hex",
- "getrandom 0.2.15",
- "hidapi-rusb",
- "js-sys",
- "log",
- "nix",
- "once_cell",
- "thiserror 1.0.69",
- "tokio",
- "tracing",
- "wasm-bindgen",
- "wasm-bindgen-futures",
 ]
 
 [[package]]
@@ -3522,7 +3477,7 @@ source = "git+https://github.com/espressosystems/espresso-systems-common?tag=0.4
 [[package]]
 name = "espresso-types"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "alloy-compat",
@@ -4650,18 +4605,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hidapi-rusb"
-version = "1.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "efdc2ec354929a6e8f3c6b6923a4d97427ec2f764cfee8cd4bfe890946cdf08b"
-dependencies = [
- "cc",
- "libc",
- "pkg-config",
- "rusb",
-]
-
-[[package]]
 name = "hkdf"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4743,7 +4686,7 @@ dependencies = [
 [[package]]
 name = "hotshot"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -4787,7 +4730,7 @@ dependencies = [
 [[package]]
 name = "hotshot-builder-api"
 version = "0.1.7"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "async-trait",
  "clap",
@@ -4807,7 +4750,7 @@ dependencies = [
 [[package]]
 name = "hotshot-contract-adapter"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -4831,7 +4774,7 @@ dependencies = [
 [[package]]
 name = "hotshot-example-types"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "anyhow",
  "async-lock 3.4.0",
@@ -4857,7 +4800,7 @@ dependencies = [
 [[package]]
 name = "hotshot-fakeapi"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "anyhow",
  "async-lock 3.4.0",
@@ -4876,7 +4819,7 @@ dependencies = [
 [[package]]
 name = "hotshot-libp2p-networking"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -4906,7 +4849,7 @@ dependencies = [
 [[package]]
 name = "hotshot-macros"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "derive_builder",
  "proc-macro2",
@@ -4918,7 +4861,7 @@ dependencies = [
 [[package]]
 name = "hotshot-query-service"
 version = "0.1.76"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -4970,7 +4913,7 @@ dependencies = [
 [[package]]
 name = "hotshot-task"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "async-broadcast",
  "async-trait",
@@ -4984,7 +4927,7 @@ dependencies = [
 [[package]]
 name = "hotshot-task-impls"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -5020,7 +4963,7 @@ dependencies = [
 [[package]]
 name = "hotshot-testing"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -5063,7 +5006,7 @@ dependencies = [
 [[package]]
 name = "hotshot-types"
 version = "0.1.11"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -5123,7 +5066,7 @@ dependencies = [
 [[package]]
 name = "hotshot-utils"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "tracing",
  "workspace-hack",
@@ -6731,18 +6674,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "libusb1-sys"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da050ade7ac4ff1ba5379af847a10a10a8e284181e060105bf8d86960ce9ce0f"
-dependencies = [
- "cc",
- "libc",
- "pkg-config",
- "vcpkg",
-]
-
-[[package]]
 name = "libz-sys"
 version = "1.1.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6936,15 +6867,6 @@ name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
-
-[[package]]
-name = "memoffset"
-version = "0.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5de893c32cde5f383baa4c04c5d6dbdd735cfd4a794b0debdb2bb1b421da5ff4"
-dependencies = [
- "autocfg",
-]
 
 [[package]]
 name = "memoize"
@@ -7223,8 +7145,6 @@ dependencies = [
  "bitflags 1.3.2",
  "cfg-if",
  "libc",
- "memoffset",
- "pin-utils",
 ]
 
 [[package]]
@@ -8868,16 +8788,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "48fd7bd8a6377e15ad9d42a8ec25371b94ddc67abe7c8b9127bec79bebaaae18"
 
 [[package]]
-name = "rusb"
-version = "0.9.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab9f9ff05b63a786553a4c02943b74b34a988448671001e9a27e2f0565cc05a4"
-dependencies = [
- "libc",
- "libusb1-sys",
-]
-
-[[package]]
 name = "rust-ini"
 version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -9300,7 +9210,7 @@ checksum = "cd0b0ec5f1c1ca621c432a25813d8d60c88abe6d3e08a3eb9cf37d97a0fe3d73"
 [[package]]
 name = "sequencer-utils"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "alloy",
  "anyhow",
@@ -11390,7 +11300,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vid"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "anyhow",
  "ark-bn254",
@@ -12044,7 +11954,7 @@ dependencies = [
 [[package]]
 name = "workspace-hack"
 version = "0.1.0"
-source = "git+https://github.com/espressosystems/espresso-network?branch=main#71c6a0a75cbc1724a1ba2f2c5739404fa2dbe6db"
+source = "git+https://github.com/espressosystems/espresso-network?tag=20250411-patch6#93641c57bf4872284f78f714c1e471b36fe98651"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
