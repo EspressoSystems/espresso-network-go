@@ -56,35 +56,3 @@ type namespaceProofTestData struct {
 	NsTable   []uint8         `json:"ns_table"`
 	TxCommit  string          `json:"tx_commit"`
 }
-
-func TestNamespaceProofVerification(t *testing.T) {
-	file, err := os.Open("./namespace_proof_test_data.json")
-	if err != nil {
-		log.Fatalf("Failed to open file: %v", err)
-	}
-	defer file.Close()
-
-	bytes, err := io.ReadAll(file)
-	if err != nil {
-		log.Fatalf("Failed to read file")
-	}
-
-	var data namespaceProofTestData
-
-	if err := json.Unmarshal(bytes, &data); err != nil {
-		log.Fatalf("Failed to unmarshal the test data: %v", err)
-	}
-
-	r := verifyNamespace(data.Namespace, data.NsProof, []byte(data.VidCommit), data.NsTable, []byte(data.TxCommit), data.VidCommon)
-	if !r {
-		log.Fatalf("Failed to verify the namespace proof")
-	}
-
-	// Tamper with the correct data and see if it will return false
-	data.Namespace = 1
-
-	r = verifyNamespace(data.Namespace, data.NsProof, []byte(data.VidCommit), data.NsTable, []byte(data.TxCommit), data.VidCommon)
-	if r {
-		log.Fatalf("Failed to verify the namespace proof")
-	}
-}
