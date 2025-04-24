@@ -202,25 +202,3 @@ pub struct NamespaceProofQueryData {
     pub proof: Option<NsProof>,
     pub transactions: Vec<crate::Transaction>,
 }
-
-#[test]
-fn test_ns_proof() {
-    use espresso_types::SeqTypes;
-    use hotshot_query_service::availability::VidCommonQueryData;
-    let ns_table_str = std::fs::read_to_string("../../resp/rari_namespace_table.json").unwrap();
-    let ns_proof_str = std::fs::read_to_string("../../resp/rari_namespace_header.json").unwrap();
-    let ns_table_str = r#"{"bytes":"DAAAABAnAAAXBAAAEScAANUIAAASJwAAuAwAABMnAADXEAAAFCcAAOgUAAAVJwAAqhkAABYnAAAjHwAAFycAAFIkAAAYJwAA5SYAABknAAAsLAAAGicAAJ8vAABpcmFy00IAAA=="}"#;
-    let common_str = std::fs::read_to_string("../../resp/rari_vid_common.json").unwrap();
-
-    let ns_table: NsTable = serde_json::from_str(&ns_table_str).unwrap();
-    let ns_proof: NamespaceProofQueryData = serde_json::from_str(&ns_proof_str).unwrap();
-    let ns_proof = ns_proof.proof.unwrap();
-    // let commit: VidCommitment = serde_json::from_str(commit_str).unwrap();
-    let common_qd: VidCommonQueryData<SeqTypes> = serde_json::from_str(&common_str).unwrap();
-    let common = common_qd.common();
-    let commit = common_qd.payload_hash();
-
-    let result = ns_proof.verify(&ns_table, &commit, common);
-
-    println!("{result:?}");
-}
