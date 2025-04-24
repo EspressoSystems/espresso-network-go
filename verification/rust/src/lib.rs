@@ -126,6 +126,7 @@ pub extern "C" fn verify_namespace_helper(
     let verify_result = proof.verify(&ns_table, &commit, &vid_common);
     println!("verify_result {:?}", verify_result);
     let (txns, ns) = handle_result!(proof.verify(&ns_table, &commit, &vid_common).ok_or(()));
+    println!("PROOF: {:?},\n NS_TABLE{:?},\n COMMIT{:?},\n VID_COMMON{:?}\n", proof, ns_table, commit, vid_common);
     
     let namespace: u32 = handle_result!(namespace.try_into());
     let txns_comm = hash_txns(namespace, &txns);
