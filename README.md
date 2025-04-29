@@ -41,3 +41,14 @@ You can also clean the downloaded files with the following command.
 ## Generating contract bindings
 
     just bind-light-client
+
+## Generating verification test data
+
+To get the `transaction_in_block` test data, run the following in query-service:
+`https://query.decaf.testnet.espresso.network/v1/availability/block/block-number/namespace/namespace-id`
+
+You can get `vid_common` test data by running the following in query-service:
+`https://query.decaf.testnet.espresso.network/v1/availability/vid/common/block-height`
+
+Finally, you can get `header` test data by running the following in query-service:
+`https://query.decaf.testnet.espresso.network/v1/availability/header/block-height`
