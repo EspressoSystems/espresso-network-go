@@ -99,6 +99,7 @@
 
                 jq
                 just
+                curl
 
                 # provides abigen
                 go-ethereum

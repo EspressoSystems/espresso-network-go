@@ -10,22 +10,17 @@ import (
 )
 
 type Client struct {
-	baseUrl     string
-	fallBackUrl string
-	client      *http.Client
+	baseUrl string
+	client  *http.Client
 }
 
-func NewClient(url string, fallBackurl string) *Client {
+func NewClient(url string) *Client {
 	if !strings.HasSuffix(url, "/") {
 		url += "/"
 	}
-	if !strings.HasSuffix(fallBackurl, "/") {
-		fallBackurl += "/"
-	}
 	return &Client{
-		baseUrl:     url,
-		fallBackUrl: fallBackurl,
-		client:      http.DefaultClient,
+		baseUrl: url,
+		client:  http.DefaultClient,
 	}
 }
 
@@ -48,15 +43,7 @@ func (c *Client) FetchDevInfo(ctx context.Context) (DevInfo, error) {
 func (c *Client) getRawMessage(ctx context.Context, format string, args ...any) (json.RawMessage, error) {
 	res, err := c.tryRequest(ctx, c.baseUrl, format, args...)
 	if err != nil {
-		// try with the fallback url
-		if c.fallBackUrl != "" {
-			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
-			resFallBack, errFallBack := c.tryRequest(ctx, c.fallBackUrl, format, args...)
-			if errFallBack != nil {
-				return nil, err
-			}
-			res = resFallBack
-		}
+		return nil, err
 	}
 
 	defer res.Body.Close()
