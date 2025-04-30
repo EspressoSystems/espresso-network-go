@@ -50,4 +50,8 @@ jobs:
         run: just build-verification
 
       - name: Test
-        run: just test
+        run: |
+          if [ "$(uname -s)" != "Darwin" ]; then
+            export LD_LIBRARY_PATH="$PWD/target/lib:$LD_LIBRARY_PATH"
+          fi         
+          just test
