@@ -42,7 +42,7 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 		t.Fatalf("Failed to unmarshal: %v", err)
 	}
 
-	success := VerifyNamespace(
+	success, err := VerifyNamespace(
 		1918988905,
 		res.Proof,
 		*header.Header.GetPayloadCommitment(),
@@ -51,7 +51,7 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 		json.RawMessage(vidCommon.Common),
 	)
 	if !success {
-		t.Fatalf("Failed to verify namespace")
+		t.Fatalf("Failed to verify namespace: %v", err)
 	}
 }
 

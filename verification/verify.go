@@ -19,12 +19,12 @@ func VerifyNamespace(
 	ns_table espressoTypes.NsTable,
 	txs []espressoTypes.Bytes,
 	common_data json.RawMessage,
-) bool {
+) (bool, error) {
 	// TODO: this code will likely no longer be used in the STF soon.
 	// G115: integer overflow conversion uint64 -> uint32 (gosec)
 	// #nosec G115
 	var txnComm = hashTxns(uint32(namespace), txs)
-	res := verifyNamespace(
+	return verifyNamespace(
 		namespace,
 		proof,
 		[]byte(block_comm.String()),
@@ -32,7 +32,6 @@ func VerifyNamespace(
 		[]byte(txnComm),
 		common_data,
 	)
-	return res
 }
 
 func VerifyMerkleProof(
@@ -40,7 +39,7 @@ func VerifyMerkleProof(
 	header json.RawMessage,
 	blockComm espressoTypes.TaggedBase64,
 	circuit_comm_bytes espressoTypes.Commitment,
-) bool {
+) (bool, error) {
 	return verifyMerkleProof(proof, header, []byte(blockComm.String()), circuit_comm_bytes[:])
 }
 
