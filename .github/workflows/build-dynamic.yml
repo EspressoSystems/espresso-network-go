@@ -89,4 +89,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            target/lib/*/*.a
+            target/lib/*/*.dylib
+            target/lib/*/*.so
