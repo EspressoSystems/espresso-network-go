@@ -57,6 +57,8 @@ func verifyNamespace(namespace uint64, proof []byte, blockComm []byte, nsTable [
 	result := C.verify_namespace_helper(
 		c_namespace, proofPtr, proofLen, blockCommPtr, blockCommLen, nsTablePtr, nsTableLen, txCommPtr, txCommLen, commonDataPtr, commonDataLen)
 	defer C.free_error_string(result.error)
+	// Allocate a new string in go, so we can free the C string
+	// See https://go.dev/wiki/cgo#go-strings-and-c-strings
 	msg := C.GoString(result.error)
 	return bool(result.success), errors.New(msg)
 }
@@ -77,6 +79,7 @@ func verifyMerkleProof(proof []byte, header []byte, blockComm []byte, circuitBlo
 
 	result := C.verify_merkle_proof_helper(proofPtr, proofLen, headerPtr, headerLen, blockCommPtr, blockCommLen, circuitBlockPtr, circuitBlockLen)
 	defer C.free_error_string(result.error)
+	// Allocate a new string in go, so we can free the C string
 	msg := C.GoString(result.error)
 	return bool(result.success), errors.New(msg)
 }
