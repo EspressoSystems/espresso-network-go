@@ -6,7 +6,7 @@ edition = "2021"
 
 [lib]
 
-crate-type = ["staticlib", "cdylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 ark-ed-on-bn254 = "0.4"

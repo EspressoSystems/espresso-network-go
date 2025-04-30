@@ -37,5 +37,5 @@ triple := if arch() == "aarch64" {
 build-verification:
 	mkdir -p {{target_lib}}
 	cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
-	install {{verification_dir}}/target/release/libespresso_crypto_helper.a {{target_lib}}/libespresso_crypto_helper-{{triple}}.a
+	install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib
 	go build ./verification
