@@ -44,5 +44,10 @@ build-verification:
     fi
     mkdir -p {{target_lib}}
     cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
-    install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib
+    @if [ "$$(uname -s)" = "Darwin" ]; then \
+        install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib; \
+    fi
+    @if [ "$$(uname -s)" != "Darwin" ]; then \
+        install {{verification_dir}}/target/release/libespresso_crypto_helper.so {{target_lib}}/libespresso_crypto_helper-{{triple}}.so; \
+    fi
     go build ./verification
