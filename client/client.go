@@ -18,22 +18,18 @@ var _ SubmitAPI = (*Client)(nil)
 var _ EspressoClient = (*Client)(nil)
 
 type Client struct {
-	baseUrl     string
-	fallBackUrl string
-	client      *http.Client
+	baseUrl string
+	client  *http.Client
 }
 
-func NewClient(url string, fallBackUrl string) *Client {
+func NewClient(url string) *Client {
 	if !strings.HasSuffix(url, "/") {
 		url += "/"
 	}
-	if !strings.HasSuffix(fallBackUrl, "/") {
-		fallBackUrl += "/"
-	}
+
 	return &Client{
-		baseUrl:     url,
-		fallBackUrl: fallBackUrl,
-		client:      http.DefaultClient,
+		baseUrl: url,
+		client:  http.DefaultClient,
 	}
 }
 
@@ -140,14 +136,7 @@ func (c *Client) FetchTransactionsInBlock(ctx context.Context, blockHeight uint6
 func (c *Client) SubmitTransaction(ctx context.Context, tx types.Transaction) (*types.TaggedBase64, error) {
 	response, err := c.tryPostRequest(ctx, c.baseUrl, tx)
 	if err != nil {
-		if c.fallBackUrl != "" {
-			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
-			responseFallBack, errFallBack := c.tryPostRequest(ctx, c.fallBackUrl, tx)
-			if errFallBack != nil {
-				return nil, err
-			}
-			response = responseFallBack
-		}
+		return nil, err
 	}
 
 	defer response.Body.Close()
@@ -175,15 +164,7 @@ type NamespaceResponse struct {
 func (c *Client) getRawMessage(ctx context.Context, format string, args ...any) (json.RawMessage, error) {
 	res, err := c.tryGetRequest(ctx, c.baseUrl, format, args...)
 	if err != nil {
-		// try with the fallback url
-		if c.fallBackUrl != "" {
-			fmt.Println("Trying with fallback url", "url", c.fallBackUrl)
-			resFallBack, errFallBack := c.tryGetRequest(ctx, c.fallBackUrl, format, args...)
-			if errFallBack != nil {
-				return nil, err
-			}
-			res = resFallBack
-		}
+		return nil, err
 	}
 
 	defer res.Body.Close()

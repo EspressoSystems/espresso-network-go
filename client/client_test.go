@@ -23,7 +23,7 @@ func TestApiWithEspressoDevNode(t *testing.T) {
 		t.Fatal("failed to start espresso dev node", err)
 	}
 
-	client := NewClient("http://localhost:21", "http://localhost:21000")
+	client := NewClient("http://localhost:21000")
 
 	_, err = client.FetchLatestBlockHeight(ctx)
 	if err != nil {

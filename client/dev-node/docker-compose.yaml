@@ -1,7 +1,18 @@
 version: "3.9"
 services:
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:latest
+    container_name: anvil
+    command: anvil
+    ports:
+      - "8545:8545" # JSON-RPC
+      - "8546:8546" # WebSocket (optional)
+    environment:
+      - ANVIL_IP_ADDR=0.0.0.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   espresso-dev-node:
-    image: ghcr.io/espressosystems/espresso-sequencer/espresso-dev-node:20250412-dev-node-pos-preview
+    image: ghcr.io/espressosystems/espresso-sequencer/espresso-dev-node:20250428-dev-node-decaf-pos
     ports:
       - "$ESPRESSO_SEQUENCER_API_PORT:$ESPRESSO_SEQUENCER_API_PORT"
       - "$ESPRESSO_BUILDER_PORT:$ESPRESSO_BUILDER_PORT"
@@ -19,8 +30,8 @@ services:
       - RUST_LOG_FORMAT
     volumes:
       - espresso_storage:/data/espresso
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - anvil
 
 volumes:
   espresso_storage:

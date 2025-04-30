@@ -41,3 +41,45 @@ You can also clean the downloaded files with the following command.
 ## Generating contract bindings
 
     just bind-light-client
+
+## Generating verification test data
+
+For `TestVerifyNamespaceWithRealData` test, you can get the data as follows:
+To get the `transaction_in_block` test data, run the following in query-service:
+`https://query.decaf.testnet.espresso.network/v1/availability/block/block-number/namespace/namespace-id`
+
+You can get `vid_common` test data by running the following in query-service:
+`https://query.decaf.testnet.espresso.network/v1/availability/vid/common/block-height`
+
+Finally, you can get `header` test data by running the following in query-service:
+`https://query.decaf.testnet.espresso.network/v1/availability/header/block-height`
+
+For `TestNamespaceProofVerification` to generate `namespace_proof_test_data.json`, you can run the following command:
+
+You need to generate the data using `espresso-network` repo and add println statements similar to the following [code](https://github.com/EspressoSystems/espresso-network/blob/generate-verfification-data/types/src/v0/impls/block/full_payload/ns_proof/avidm.rs#L162-L170)
+
+To run the test, you can run the following command:
+
+```
+cd espresso-network/types
+cargo test ns_proof -- --nocapture
+```
+
+## Generating merkle proof test data
+
+To generate the merkle proof test data, you first need to start the dev node with anvil node:
+
+```
+cd client/dev-node
+docker compose up
+```
+
+Then to generate the merkle proof test data, uncomment the `TestGenerateMerkleProofTestData` test in `verification/merkle_proof_test_data_generation_test.go` which generates the merkle proof test data json file
+
+Then run the test using:
+
+```
+go test ./verification -run ^TestGenerateMerkleProofTestData$
+```
+
+Use dev node and visit http://localhost:{port}/v0/api/dev-info to get the light client address

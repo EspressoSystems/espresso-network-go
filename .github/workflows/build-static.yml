@@ -32,7 +32,7 @@ jobs:
         with:
           toolchain: "1.81.0"
           targets: ${{ matrix.target }}
-      
+
       - name: Add Rust target
         run: rustup target add ${{ matrix.target }}
 
@@ -51,9 +51,18 @@ jobs:
       - name: Build Static Library
         run: |
           echo "Building for target: ${{ matrix.target }}"
+          if [ "$(uname -s)" != "Darwin" ]; then
+            export LD_LIBRARY_PATH="$PWD/target/lib:$LD_LIBRARY_PATH"
+          fi
           mkdir -p target/lib && \
           cargo build --release --locked --target ${{ matrix.target }} --manifest-path ./verification/rust/Cargo.toml && \
-          cp ./verification/rust/target/${{ matrix.target }}/release/libespresso_crypto_helper.a target/lib/libespresso_crypto_helper-${{ matrix.target }}.a
+          if [ "$(uname -s)" == "Darwin" ]; then
+            cp ./verification/rust/target/${{ matrix.target }}/release/libespresso_crypto_helper.dylib target/lib/libespresso_crypto_helper-${{ matrix.target }}.dylib
+          fi
+          if [ "$(uname -s)" != "Darwin" ]; then
+            cp ./verification/rust/target/${{ matrix.target }}/release/libespresso_crypto_helper.so target/lib/libespresso_crypto_helper-${{ matrix.target }}.so
+          fi
+
 
       - name: Upload Artifact (Push Only)
         if: github.event_name == 'push'
@@ -82,4 +91,3 @@ jobs:
         with:
           files: |
             target/lib/*/*.a
-

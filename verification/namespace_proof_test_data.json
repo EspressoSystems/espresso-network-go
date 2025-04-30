@@ -5,10 +5,10 @@
       "ns_payload": [
         3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0, 20, 26, 250, 111, 72, 40
       ],
-      "ns_proof": "MERKLE_PROOF~AQAAAAAAAAACAAAAAAAAADNAe8tCpbwU7tclwWHJAyVDH-p7mm83kt2n5BgglE31AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4"
+      "ns_proof": "MERKLE_PROOF~AQAAAAAAAAACAAAAAAAAAOiGF-SEiGzWEIFAHfElj12MUBXIWWp32MinBDi2H53ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO"
     }
   },
-  "vid_commit": "AvidMCommit~gQ5kyqGmio2448wCian4xv1FHjhStmW0adt9f0z7r6GU",
+  "vid_commit": "AvidMCommit~WuG_hRf__dciS9qe0uA3xvCupxAe23I5hOIs35J2IkMf",
   "vid_common": {
     "V1": {
       "total_weights": 10,

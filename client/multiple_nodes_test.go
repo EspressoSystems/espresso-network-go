@@ -161,7 +161,7 @@ func TestApiWithSingleEspressoDevNode(t *testing.T) {
 		t.Fatal("failed to start espresso dev node", err)
 	}
 
-	client := NewMultipleNodesClient([]string{"http://localhost:21"}, []string{"http://localhost:21000"})
+	client := NewMultipleNodesClient([]string{"http://localhost:21000"})
 
 	_, err = client.FetchLatestBlockHeight(ctx)
 	if err != nil {

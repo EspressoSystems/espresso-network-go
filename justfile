@@ -18,6 +18,7 @@ bind-light-client:
 verification_dir := "./verification/rust"
 target_lib := "./target/lib"
 
+
 triple := if arch() == "aarch64" {
 	if os() == "macos" {
 		"aarch64-apple-darwin"
@@ -34,8 +35,18 @@ triple := if arch() == "aarch64" {
 	error("{{arch()}} is not supported")
 }
 
+
+os_name := `uname -s`
+
 build-verification:
+	@if [ "{{os_name}}" != "Darwin" ]; then \
+		export LD_LIBRARY_PATH="$$(pwd)/target/lib:$$LD_LIBRARY_PATH"; \
+	fi
 	mkdir -p {{target_lib}}
 	cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
-	install {{verification_dir}}/target/release/libespresso_crypto_helper.a {{target_lib}}/libespresso_crypto_helper-{{triple}}.a
+	@if [ "{{os_name}}" == "Darwin" ]; then \
+		install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib; \
+	else \
+		install {{verification_dir}}/target/release/libespresso_crypto_helper.so {{target_lib}}/libespresso_crypto_helper-{{triple}}.so; \
+	fi
 	go build ./verification
