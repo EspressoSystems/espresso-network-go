@@ -97,27 +97,39 @@ func clean() {
 
 func getFileName() string {
 	arch := runtime.GOARCH
+	os := runtime.GOOS
 
 	var fileName string
+	var extension string
 
+	// Determine file extension based on OS
+	if os == "darwin" {
+		extension = ".dylib"
+	} else if os == "linux" {
+		extension = ".so"
+	} else {
+		panic(fmt.Sprintf("unsupported OS: %s", os))
+	}
+
+	// Determine architecture-specific prefix
 	switch arch {
 	case "amd64":
-		if runtime.GOOS == "darwin" {
+		if os == "darwin" {
 			fileName = "x86_64-apple-darwin"
-		} else if runtime.GOOS == "linux" {
+		} else if os == "linux" {
 			fileName = "x86_64-unknown-linux-musl"
 		}
 	case "arm64":
-		if runtime.GOOS == "darwin" {
+		if os == "darwin" {
 			fileName = "aarch64-apple-darwin"
-		} else if runtime.GOOS == "linux" {
+		} else if os == "linux" {
 			fileName = "aarch64-unknown-linux-musl"
 		}
 	default:
-		panic(fmt.Sprintf("unsupported: %s", arch))
+		panic(fmt.Sprintf("unsupported architecture: %s", arch))
 	}
 
-	return fmt.Sprintf("libespresso_crypto_helper-%s.a", fileName)
+	return fmt.Sprintf("libespresso_crypto_helper-%s%s", fileName, extension)
 }
 
 func getFileDir() string {
