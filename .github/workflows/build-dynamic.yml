@@ -3,7 +3,7 @@ name: Build Rust Dynamic Libraries
 on:
   push:
     branches:
-      - "*"
+      - main
     tags:
       - "v*.*.*"
   pull_request:
@@ -64,7 +64,6 @@ jobs:
           fi
 
       - name: Upload Artifact (Push Only)
-        if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
           name: libespresso_crypto_helper-${{ matrix.target }}.${{ contains(matrix.target, 'apple-darwin') && 'dylib' || 'so' }}
