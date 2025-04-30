@@ -43,7 +43,7 @@ func TestVerifyNamespaceWithRealData(t *testing.T) {
 	}
 
 	success := VerifyNamespace(
-		412346,
+		1918988905,
 		res.Proof,
 		*header.Header.GetPayloadCommitment(),
 		*header.Header.GetNsTable(),
