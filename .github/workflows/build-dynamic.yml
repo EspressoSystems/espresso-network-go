@@ -3,7 +3,7 @@ name: Build Rust Static Libraries
 on:
   push:
     branches:
-      - main
+      - *
     tags:
       - "v*.*.*"
   pull_request:
@@ -48,7 +48,7 @@ jobs:
           echo CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc >> ${{ github.env }}
           echo CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUNNER="qemu-aarch64 -L /usr/aarch64-linux-gnu" >> ${{ github.env }}
 
-      - name: Build Static Library
+      - name: Build Dynamic Library
         run: |
           echo "Building for target: ${{ matrix.target }}"
           if [ "$(uname -s)" != "Darwin" ]; then
@@ -63,13 +63,12 @@ jobs:
             cp ./verification/rust/target/${{ matrix.target }}/release/libespresso_crypto_helper.so target/lib/libespresso_crypto_helper-${{ matrix.target }}.so
           fi
 
-
       - name: Upload Artifact (Push Only)
         if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: libespresso_crypto_helper-${{ matrix.target }}.a
-          path: target/lib/libespresso_crypto_helper-${{ matrix.target }}.a
+          name: libespresso_crypto_helper-${{ matrix.target }}.${{ contains(matrix.target, 'apple-darwin') && 'dylib' || 'so' }}
+          path: target/lib/libespresso_crypto_helper-${{ matrix.target }}.${{ contains(matrix.target, 'apple-darwin') && 'dylib' || 'so' }}
 
   release:
     name: Upload Release Artifacts
