@@ -1,5 +1,3 @@
-set shell := ["sh", "-uc"]
-
 lint:
     golangci-lint run ./...
 
@@ -38,16 +36,17 @@ triple := if arch() == "aarch64" {
 }
 
 
+os_name := `uname -s`
+
 build-verification:
-    @if [ "$$(uname -s)" != "Darwin" ]; then \
-        export LD_LIBRARY_PATH="$$(pwd)/target/lib:$$LD_LIBRARY_PATH"; \
-    fi
-    mkdir -p {{target_lib}}
-    cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
-    @if [ "$$(uname -s)" == "Darwin" ]; then \
-        install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib; \
-    fi
-    @if [ "$$(uname -s)" != "Darwin" ]; then \
-        install {{verification_dir}}/target/release/libespresso_crypto_helper.so {{target_lib}}/libespresso_crypto_helper-{{triple}}.so; \
-    fi
-    go build ./verification
+	@if [ "{{os_name}}" != "Darwin" ]; then \
+		export LD_LIBRARY_PATH="$$(pwd)/target/lib:$$LD_LIBRARY_PATH"; \
+	fi
+	mkdir -p {{target_lib}}
+	cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
+	@if [ "{{os_name}}" == "Darwin" ]; then \
+		install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib; \
+	else \
+		install {{verification_dir}}/target/release/libespresso_crypto_helper.so {{target_lib}}/libespresso_crypto_helper-{{triple}}.so; \
+	fi
+	go build ./verification
