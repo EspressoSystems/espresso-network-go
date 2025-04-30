@@ -1,3 +1,5 @@
+set shell := ["sh", "-uc"]
+
 lint:
     golangci-lint run ./...
 
@@ -18,6 +20,7 @@ bind-light-client:
 verification_dir := "./verification/rust"
 target_lib := "./target/lib"
 
+
 triple := if arch() == "aarch64" {
 	if os() == "macos" {
 		"aarch64-apple-darwin"
@@ -34,8 +37,12 @@ triple := if arch() == "aarch64" {
 	error("{{arch()}} is not supported")
 }
 
+
 build-verification:
-	mkdir -p {{target_lib}}
-	cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
-	install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib
-	go build ./verification
+    @if [ "$$(uname -s)" != "Darwin" ]; then \
+        export LD_LIBRARY_PATH="$$(pwd)/target/lib:$$LD_LIBRARY_PATH"; \
+    fi
+    mkdir -p {{target_lib}}
+    cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
+    install {{verification_dir}}/target/release/libespresso_crypto_helper.dylib {{target_lib}}/libespresso_crypto_helper-{{triple}}.dylib
+    go build ./verification
