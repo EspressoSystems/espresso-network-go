@@ -11,6 +11,8 @@ use jf_merkle_tree::prelude::{
     MerkleCommitment, MerkleNode, MerkleProof, MerkleTreeScheme, Sha3Node,
 };
 use sha2::{Digest, Sha256};
+use std::ffi::CString;
+use std::os::raw::c_char;
 use tagged_base64::TaggedBase64;
 
 pub type Proof = Vec<MerkleNode<Commitment<Header>, u64, Sha3Node>>;
@@ -20,10 +22,48 @@ macro_rules! handle_result {
     ($result:expr) => {
         match $result {
             Ok(value) => value,
-            Err(_) => return false,
+            Err(err) => return VerificationResult::err(&format!("Error: {:?}", err)),
         }
     };
 }
+
+#[repr(C)]
+pub struct VerificationResult {
+    // The verification succeeded
+    pub success: bool,
+    // The error message if the verification failed, otherwise empty
+    pub error: *mut c_char,
+}
+
+impl VerificationResult {
+    fn err(msg: &str) -> VerificationResult {
+        let ptr = CString::new(msg).unwrap().into_raw();
+        VerificationResult{ success: false, error: ptr }
+    }
+
+    fn success() -> VerificationResult {
+        let ptr = CString::new("").unwrap().into_raw();
+        VerificationResult {
+            success: true,
+            error: ptr,
+        }
+    }
+}
+
+/// In order to communicate validation failures we allocate a string in our rust code. Therefore we
+/// need to provide a way to our FFI consumer to free the memory we allocated in this way.
+///
+/// This function needs to be called for every ValidationResult created via FFI.
+#[no_mangle]
+pub extern "C" fn free_error_string(s: *mut c_char) {
+    if !s.is_null() {
+        unsafe {
+            let _ = CString::from_raw(s);
+        }
+    }
+}
+
+
 
 // Helper function to verify a block merkle proof.
 // proof_bytes: Byte representation of a block merkle proof.
@@ -40,7 +80,7 @@ pub extern "C" fn verify_merkle_proof_helper(
     block_comm_len: usize,
     circuit_block_ptr: *const u8,
     circuit_block_len: usize,
-) -> bool {
+) -> VerificationResult {
     let proof_bytes = handle_result!(slice_from_raw_parts(proof_ptr, proof_len));
     let header_bytes = handle_result!(slice_from_raw_parts(header_ptr, header_len));
     let block_comm_bytes = handle_result!(slice_from_raw_parts(block_comm_ptr, block_comm_len));
@@ -59,7 +99,7 @@ pub extern "C" fn verify_merkle_proof_helper(
     let proved_comm = if let Some(p) = proof.elem() {
         p.clone()
     } else {
-        return false;
+        return VerificationResult::err("Merkle Proof missing element");
     };
     handle_result!(handle_result!(BlockMerkleTree::verify(
         block_comm.digest(),
@@ -74,13 +114,17 @@ pub extern "C" fn verify_merkle_proof_helper(
     let circuit_block_comm_u256 = U256::from_little_endian(circuit_block_bytes);
 
     if proved_comm != header_comm {
-        return false;
+        return VerificationResult::err(&format!(
+            "header commitment mismatch: proven {proved_comm} != header {header_comm}"
+        ));
     }
 
     if local_block_comm_u256 != circuit_block_comm_u256 {
-        return false;
+        return VerificationResult::err(&format!(
+            "circuit commitment mismatch: proven {local_block_comm_u256} != expected {circuit_block_comm_u256}"
+        ));
     }
-    return true;
+    VerificationResult::success()
 }
 
 // Helper function to verify a VID namespace proof that takes the byte representations of the proof,
@@ -103,7 +147,7 @@ pub extern "C" fn verify_namespace_helper(
     tx_comm_len: usize,
     common_data_ptr: *const u8,
     common_data_len: usize,
-) -> bool {
+) -> VerificationResult {
     let ns_table_bytes = handle_result!(slice_from_raw_parts(ns_table_ptr, ns_table_len));
     let proof_bytes = handle_result!(slice_from_raw_parts(proof_ptr, proof_len));
     let commit_bytes = handle_result!(slice_from_raw_parts(commit_ptr, commit_len));
@@ -122,12 +166,20 @@ pub extern "C" fn verify_namespace_helper(
     let (txns, ns) = handle_result!(proof.verify(&ns_table, &commit, &vid_common).ok_or(()));
 
     let namespace: u32 = handle_result!(namespace.try_into());
-    let txns_comm = hash_txns(namespace, &txns);
 
-    if (ns == namespace.into()) && (txns_comm == txn_comm_str) {
-        return true;
+    if ns != namespace.into() {
+        return VerificationResult::err(&format!("namespace mismatch: proven {} != expected {}", ns, namespace));
+    };
+
+    let txns_comm = hash_txns(namespace, &txns);
+    if txns_comm != txn_comm_str {
+        return VerificationResult::err(&format!(
+            "commitment mismatch: proven {} != expected {}",
+            txns_comm, txn_comm_str
+        ));
     }
-    return false;
+
+    VerificationResult::success()
 }
 
 // TODO: Use Commit trait: https://github.com/EspressoSystems/nitro-espresso-integration/issues/88
@@ -160,4 +212,23 @@ fn slice_from_raw_parts<'a>(ptr: *const u8, len: usize) -> Result<&'a [u8], ()> 
         return Err(());
     }
     Ok(unsafe { std::slice::from_raw_parts(ptr, len) })
+}
+
+#[cfg(test)]
+mod test {
+    use std::ffi::CString;
+
+    use crate::free_error_string;
+
+    #[test]
+    fn test_free_error_str() {
+        let error_string = CString::new("Error message").unwrap();
+        let ptr = error_string.into_raw();
+
+        // sanity check that the function works
+        free_error_string(ptr);
+
+        // sanity check that the function doesn't panic if the pointer is null
+        free_error_string(std::ptr::null_mut());
+    }
 }

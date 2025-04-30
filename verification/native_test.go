@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -33,17 +34,25 @@ func TestMerkleProofVerification(t *testing.T) {
 		log.Fatalf("Failed to unmarshal the test data")
 	}
 
-	r := verifyMerkleProof(data.Proof, data.Header, []byte(data.BlockMerkleRoot), data.HotShotCommitment)
+	r, err := verifyMerkleProof(data.Proof, data.Header, []byte(data.BlockMerkleRoot), data.HotShotCommitment)
 	if !r {
-		log.Fatalf("Failed to verify the merkle proof")
+		log.Fatalf("Failed to verify the merkle proof %v", err)
 	}
 
 	// Tamper with the correct data and see if it will return false
 	data.HotShotCommitment[0] = 1
 
-	r = verifyMerkleProof(data.Proof, data.Header, []byte(data.BlockMerkleRoot), data.HotShotCommitment)
+	r, err = verifyMerkleProof(data.Proof, data.Header, []byte(data.BlockMerkleRoot), data.HotShotCommitment)
 	if r {
-		log.Fatalf("Failed to verify the merkle proof")
+		log.Fatalf("Merkle proof should have failed to verify but succeeded")
+	}
+	// Check that we received the expected error
+	if err == nil {
+		log.Fatalf("Expected an error but got nil")
+	}
+	msg := "circuit commitment mismatch"
+	if !strings.Contains(err.Error(), msg) {
+		log.Fatalf("Expected error message to contains '%v', got: %v", msg, err.Error())
 	}
 
 }
@@ -75,16 +84,23 @@ func TestNamespaceProofVerification(t *testing.T) {
 		log.Fatalf("Failed to unmarshal the test data: %v", err)
 	}
 
-	r := verifyNamespace(data.Namespace, data.NsProof, []byte(data.VidCommit), data.NsTable, []byte(data.TxCommit), data.VidCommon)
+	r, err := verifyNamespace(data.Namespace, data.NsProof, []byte(data.VidCommit), data.NsTable, []byte(data.TxCommit), data.VidCommon)
 	if !r {
-		log.Fatalf("Failed to verify the namespace proof")
+		log.Fatalf("Failed to verify the namespace proof %v", err)
 	}
 
 	// Tamper with the correct data and see if it will return false
 	data.Namespace = 1
 
-	r = verifyNamespace(data.Namespace, data.NsProof, []byte(data.VidCommit), data.NsTable, []byte(data.TxCommit), data.VidCommon)
+	r, err = verifyNamespace(data.Namespace, data.NsProof, []byte(data.VidCommit), data.NsTable, []byte(data.TxCommit), data.VidCommon)
 	if r {
 		log.Fatalf("Failed to verify the namespace proof")
+	}
+	if err == nil {
+		log.Fatalf("Expected an error but got nil")
+	}
+	msg := "namespace mismatch"
+	if !strings.Contains(err.Error(), msg) {
+		log.Fatalf("Expected error message to contain '%v', got: %v", msg, err.Error())
 	}
 }
