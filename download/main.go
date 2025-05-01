@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const targetDir = "../target"
+const targetDir = "../target/lib"
 
 const baseURL = "https://github.com/EspressoSystems/espresso-network-go/releases"
 
