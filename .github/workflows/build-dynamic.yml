@@ -15,13 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target:
-          - x86_64-unknown-linux-gnu
-          - aarch64-unknown-linux-gnu
-          - aarch64-apple-darwin
-          - x86_64-apple-darwin
+        os: [ubuntu-latest, macos-latest]
 
-    runs-on: ${{ (matrix.target == 'x86_64-unknown-linux-gnu' || matrix.target == 'aarch64-unknown-linux-gnu') && 'ubuntu-latest' || 'macos-latest' }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout Repository
@@ -31,44 +27,27 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: "1.81.0"
-          targets: ${{ matrix.target }}
-
-      - name: Add Rust target
-        run: rustup target add ${{ matrix.target }}
-
-      - name: Set Enviornment
-        # Install tools and set environment variables like this example
-        # https://github.com/briansmith/ring/blob/main/mk/cargo.sh
-        # https://github.com/briansmith/ring/blob/main/mk/install-build-tools.sh
-        if: ${{ matrix.target == 'aarch64-unknown-linux-gnu' }}
-        run: |
-          sudo apt update
-          sudo apt-get install qemu-user gcc-aarch64-linux-gnu libc6-dev-arm64-cross
-          echo CFLAGS_aarch64_unknown_linux_gnu="--sysroot=/usr/aarch64-linux-gnu" >> ${{ github.env }}
-          echo CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc >> ${{ github.env }}
-          echo CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUNNER="qemu-aarch64 -L /usr/aarch64-linux-gnu" >> ${{ github.env }}
 
       - name: Build Dynamic Library
         run: |
-          echo "Building for target: ${{ matrix.target }}"
-          if [ "$(uname -s)" != "Darwin" ]; then
+          echo "Building on: ${{ matrix.os }}"
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
             export LD_LIBRARY_PATH="$PWD/target/lib:$LD_LIBRARY_PATH"
           fi
           mkdir -p target/lib && \
-          cargo build --release --locked --target ${{ matrix.target }} --manifest-path ./verification/rust/Cargo.toml && \
-          if [ "$(uname -s)" == "Darwin" ]; then
-            cp ./verification/rust/target/${{ matrix.target }}/release/libespresso_crypto_helper.dylib target/lib/libespresso_crypto_helper-${{ matrix.target }}.dylib
-          fi
-          if [ "$(uname -s)" != "Darwin" ]; then
-            cp ./verification/rust/target/${{ matrix.target }}/release/libespresso_crypto_helper.so target/lib/libespresso_crypto_helper-${{ matrix.target }}.so
+          cargo build --release --locked --manifest-path ./verification/rust/Cargo.toml && \
+          if [ "${{ matrix.os }}" == "macos-latest" ]; then
+            cp ./verification/rust/target/release/libespresso_crypto_helper.dylib target/lib/
+          else
+            cp ./verification/rust/target/release/libespresso_crypto_helper.so target/lib/
           fi
 
       - name: Upload Artifact (Push Only)
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: libespresso_crypto_helper-${{ matrix.target }}.${{ contains(matrix.target, 'apple-darwin') && 'dylib' || 'so' }}
-          path: target/lib/libespresso_crypto_helper-${{ matrix.target }}.${{ contains(matrix.target, 'apple-darwin') && 'dylib' || 'so' }}
+          name: libespresso_crypto_helper.${{ matrix.os == 'macos-latest' && 'dylib' || 'so' }}
+          path: target/lib/libespresso_crypto_helper.${{ matrix.os == 'macos-latest' && 'dylib' || 'so' }}
 
   release:
     name: Upload Release Artifacts
@@ -89,5 +68,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            target/lib/*/*.dylib
-            target/lib/*/*.so
+            target/lib/*.dylib
+            target/lib/*.so

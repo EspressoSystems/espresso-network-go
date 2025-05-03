@@ -19,22 +19,6 @@ verification_dir := "./verification/rust"
 target_lib := "./target/lib"
 
 
-triple := if arch() == "aarch64" {
-	if os() == "macos" {
-		"aarch64-apple-darwin"
-	} else {
-		"aarch64-unknown-linux-gnu"
-	}
-} else if arch() == "x86_64" {
-	if os() == "macos" {
-		"x86_64-apple-darwin"
-	} else {
-		"x86_64-unknown-linux-gnu"
-	}
-} else {
-	error("{{arch()}} is not supported")
-}
-
 
 os_name := `uname -s`
 
