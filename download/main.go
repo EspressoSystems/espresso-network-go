@@ -18,16 +18,18 @@ const baseURL = "https://github.com/EspressoSystems/espresso-network-go/releases
 
 func main() {
 	var version string
+	var url string
 
 	var rootCmd = &cobra.Command{Use: "app"}
 	var downloadCmd = &cobra.Command{
 		Use:   "download",
 		Short: "Download the static library",
 		Run: func(cmd *cobra.Command, args []string) {
-			download(version)
+			download(version, url)
 		},
 	}
 	downloadCmd.Flags().StringVarP(&version, "version", "v", "latest", "Specify the version to download")
+	downloadCmd.Flags().StringVarP(&url, "url", "u", "", "Specify the url to download. If this is set, the version flag will be ignored")
 
 	var cleanCmd = &cobra.Command{
 		Use:   "clean",
@@ -45,13 +47,13 @@ func main() {
 	}
 }
 
-func download(version string) {
+func download(version string, specifiedUrl string) {
 	fileName := getFileName()
 	fileDir := getFileDir()
 	libFilePath := filepath.Join(fileDir, fileName)
 
 	if _, err := os.Stat(libFilePath); err == nil {
-		fmt.Println("File already exists.")
+		fmt.Println("File already exists. Run clean to remove it first.")
 		return
 	}
 
@@ -60,7 +62,13 @@ func download(version string) {
 		os.Exit(1)
 	}
 
-	url := fmt.Sprintf("%s/download/%s/%s", baseURL, version, fileName)
+	var url string
+	if specifiedUrl != "" {
+		fmt.Printf("Using specified url to download the library: %s\n", specifiedUrl)
+		url = specifiedUrl
+	} else {
+		url = fmt.Sprintf("%s/download/%s/%s", baseURL, version, fileName)
+	}
 
 	resp, err := http.Get(url)
 	if err != nil {
