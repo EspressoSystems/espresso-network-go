@@ -2,7 +2,7 @@ package verification
 
 /*
 #cgo darwin,amd64 LDFLAGS: -L${SRCDIR}/../target/lib/ -lespresso_crypto_helper-x86_64-apple-darwin -lm
-#cgo darwin,arm64 LDFLAGS: -L${SRCDIR}/../target/lib/ -lespresso_crypto_helper-aarch64-apple-darwin -lm -framework Security
+#cgo darwin,arm64 LDFLAGS: -L${SRCDIR}/../target/lib/ -lespresso_crypto_helper-aarch64-apple-darwin -lm
 #cgo linux,amd64 LDFLAGS: -L${SRCDIR}/../target/lib/ -lespresso_crypto_helper-x86_64-unknown-linux-gnu -lm
 #cgo linux,arm64 LDFLAGS: -L${SRCDIR}/../target/lib/ -lespresso_crypto_helper-aarch64-unknown-linux-gnu -lm
 #include <stdbool.h>
@@ -57,10 +57,13 @@ func verifyNamespace(namespace uint64, proof []byte, blockComm []byte, nsTable [
 	result := C.verify_namespace_helper(
 		c_namespace, proofPtr, proofLen, blockCommPtr, blockCommLen, nsTablePtr, nsTableLen, txCommPtr, txCommLen, commonDataPtr, commonDataLen)
 	defer C.free_error_string(result.error)
+	if bool(result.success) {
+		return true, nil
+	}
 	// Allocate a new string in go, so we can free the C string
 	// See https://go.dev/wiki/cgo#go-strings-and-c-strings
 	msg := C.GoString(result.error)
-	return bool(result.success), errors.New(msg)
+	return false, errors.New(msg)
 }
 
 func verifyMerkleProof(proof []byte, header []byte, blockComm []byte, circuitBlock []byte) (bool, error) {
@@ -79,7 +82,11 @@ func verifyMerkleProof(proof []byte, header []byte, blockComm []byte, circuitBlo
 
 	result := C.verify_merkle_proof_helper(proofPtr, proofLen, headerPtr, headerLen, blockCommPtr, blockCommLen, circuitBlockPtr, circuitBlockLen)
 	defer C.free_error_string(result.error)
+	if bool(result.success) {
+		return true, nil
+	}
 	// Allocate a new string in go, so we can free the C string
+	// See https://go.dev/wiki/cgo#go-strings-and-c-strings
 	msg := C.GoString(result.error)
-	return bool(result.success), errors.New(msg)
+	return false, errors.New(msg)
 }
