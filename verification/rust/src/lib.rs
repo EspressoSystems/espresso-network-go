@@ -38,7 +38,10 @@ pub struct VerificationResult {
 impl VerificationResult {
     fn err(msg: &str) -> VerificationResult {
         let ptr = CString::new(msg).unwrap().into_raw();
-        VerificationResult{ success: false, error: ptr }
+        VerificationResult {
+            success: false,
+            error: ptr,
+        }
     }
 
     fn success() -> VerificationResult {
@@ -62,8 +65,6 @@ pub extern "C" fn free_error_string(s: *mut c_char) {
         }
     }
 }
-
-
 
 // Helper function to verify a block merkle proof.
 // proof_bytes: Byte representation of a block merkle proof.
@@ -168,7 +169,10 @@ pub extern "C" fn verify_namespace_helper(
     let namespace: u32 = handle_result!(namespace.try_into());
 
     if ns != namespace.into() {
-        return VerificationResult::err(&format!("namespace mismatch: proven {} != expected {}", ns, namespace));
+        return VerificationResult::err(&format!(
+            "namespace mismatch: proven {} != expected {}",
+            ns, namespace
+        ));
     };
 
     let txns_comm = hash_txns(namespace, &txns);
