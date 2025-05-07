@@ -1,7 +1,7 @@
-# Espresso Sequencer Go SDK
+# Espresso Network Go SDK
 
 This package provides tools and interfaces for working with the
-[Espresso sequencer](https://github.com/EspressoSystems/espresso-network) in Go. It should
+[Espresso Global Confirmation Layer](https://github.com/EspressoSystems/espresso-network) in Go. It should
 (eventually) provide everything needed to integrate a rollup written in Go with the Espresso
 sequencer.
 
