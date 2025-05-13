@@ -14,8 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const targetDir = "../target"
-
+const targetLib = "../target/lib"
 const baseURL = "https://github.com/EspressoSystems/espresso-network-go/releases"
 
 func main() {
@@ -43,13 +42,6 @@ func main() {
 		},
 	}
 
-	rootCmd.AddCommand(downloadCmd, cleanCmd)
-	err := rootCmd.Execute()
-	if err != nil {
-		fmt.Printf("Failed to execute command: %s\n", err)
-		os.Exit(1)
-	}
-
 	var filePath string
 	var checkSum string
 	var linkCmd = &cobra.Command{
@@ -61,13 +53,28 @@ func main() {
 	}
 	linkCmd.Flags().StringVarP(&filePath, "filePath", "f", "", "Specify the file path to create the symlink in")
 	linkCmd.Flags().StringVarP(&checkSum, "checkSum", "c", "", "Specify the checkSum to create the symlink in")
-	rootCmd.AddCommand(linkCmd)
+
+	rootCmd.AddCommand(downloadCmd, cleanCmd, linkCmd)
+	err := rootCmd.Execute()
+	if err != nil {
+		fmt.Printf("Failed to execute command: %s\n", err)
+		os.Exit(1)
+	}
 }
 
-func createSymlink(filePath string, checkSum string) {
+func createSymlink(path string, checkSum string) {
 	linkName := getFileName()
 	fileDir := getFileDir()
 	linkPath := filepath.Join(fileDir, linkName)
+
+	if !filepath.IsAbs(linkPath) {
+		absPath, err := filepath.Abs(linkPath)
+		if err != nil {
+			fmt.Printf("Failed to get absolute path: %s\n", err)
+			os.Exit(1)
+		}
+		linkPath = absPath
+	}
 
 	if _, err := os.Stat(linkPath); err == nil {
 		fmt.Printf("Symlink %s already exists\n, Run clean to remove it first.\n", linkPath)
@@ -75,18 +82,18 @@ func createSymlink(filePath string, checkSum string) {
 	}
 
 	// Check if the target file exists and is a regular file
-	fileInfo, err := os.Stat(filePath)
+	fileInfo, err := os.Stat(path)
 	if err != nil {
-		fmt.Printf("Target file does not exist: %s\n", filePath)
+		fmt.Printf("Target file does not exist: %s\n", path)
 		os.Exit(1)
 	}
 	if !fileInfo.Mode().IsRegular() {
-		fmt.Printf("Target file is not a regular file: %s\n", filePath)
+		fmt.Printf("Target file is not a regular file: %s\n", path)
 		os.Exit(1)
 	}
 
 	// Check if the target file matches the checksum
-	file, err := os.Open(filePath)
+	file, err := os.Open(path)
 	if err != nil {
 		fmt.Printf("Failed to open target file: %s\n", err)
 		os.Exit(1)
@@ -108,7 +115,7 @@ func createSymlink(filePath string, checkSum string) {
 		os.Exit(1)
 	}
 
-	err = os.Symlink(filePath, linkPath)
+	err = os.Symlink(path, linkPath)
 	if err != nil {
 		fmt.Printf("Failed to create symlink: %s\n", err)
 		os.Exit(1)
@@ -217,5 +224,5 @@ func getFileDir() string {
 		panic("No caller information")
 	}
 
-	return filepath.Join(path.Dir(filename), targetDir)
+	return filepath.Join(path.Dir(filename), targetLib)
 }

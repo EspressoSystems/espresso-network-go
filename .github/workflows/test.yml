@@ -53,5 +53,5 @@ jobs:
         run: |
           if [ "$(uname -s)" != "Darwin" ]; then
             export LD_LIBRARY_PATH="$PWD/target/lib:$LD_LIBRARY_PATH"
-          fi         
+          fi
           just test

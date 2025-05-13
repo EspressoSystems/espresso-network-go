@@ -41,6 +41,8 @@ os_name := `uname -s`
 build-verification:
 	@if [ "{{os_name}}" != "Darwin" ]; then \
 		export LD_LIBRARY_PATH="$$(pwd)/target/lib:$$LD_LIBRARY_PATH"; \
+	else \
+		export DYLD_LIBRARY_PATH="$$(pwd)/target/lib:$$DYLD_LIBRARY_PATH"; \
 	fi
 	mkdir -p {{target_lib}}
 	cargo build --release --manifest-path {{verification_dir}}/Cargo.toml
