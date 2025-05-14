@@ -67,13 +67,13 @@ func createSymlink(path string, checkSum string) {
 	fileDir := getFileDir()
 	linkPath := filepath.Join(fileDir, linkName)
 
-	if !filepath.IsAbs(linkPath) {
-		absPath, err := filepath.Abs(linkPath)
+	if !filepath.IsAbs(path) {
+		absPath, err := filepath.Abs(path)
 		if err != nil {
 			fmt.Printf("Failed to get absolute path: %s\n", err)
 			os.Exit(1)
 		}
-		linkPath = absPath
+		path = absPath
 	}
 
 	if _, err := os.Stat(linkPath); err == nil {
