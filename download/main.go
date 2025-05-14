@@ -168,7 +168,7 @@ func download(version string, specifiedUrl string, destination string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Static library downloaded to: %s\n", destination)
+	fmt.Printf("Verification library downloaded to: %s\n", destination)
 }
 
 func clean() {
