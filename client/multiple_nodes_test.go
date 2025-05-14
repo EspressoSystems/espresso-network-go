@@ -160,8 +160,16 @@ func TestApiWithSingleEspressoDevNode(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed to start espresso dev node", err)
 	}
+  // Test constructing the client with a single url to ensure that it requires more than one.
+	_, err = NewMultipleNodesClient([]string{"http://localhost:21000"})
+  if err == nil{
+    t.Fatal("Constructing the client with 1 url should result in an error")
+  }
 
-	client := NewMultipleNodesClient([]string{"http://localhost:21000"})
+	client, err := NewMultipleNodesClient([]string{"http://localhost:21000", "http://localhost:21000"})
+  if err == nil{
+    t.Fatal("Constructing the client with 1 url should result in an error")
+  }
 
 	_, err = client.FetchLatestBlockHeight(ctx)
 	if err != nil {
