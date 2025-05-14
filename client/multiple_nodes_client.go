@@ -18,7 +18,7 @@ var _ QueryService = (*MultipleNodesClient)(nil)
 var _ SubmitAPI = (*MultipleNodesClient)(nil)
 var _ EspressoClient = (*MultipleNodesClient)(nil)
 
-var IncorrectUrlAmountErr = errors.New("The MultipleNodesClient must be constructed with a")
+var IncorrectUrlAmountErr = errors.New("The MultipleNodesClient must be constructed with more than one node url")
 
 type MultipleNodesClient struct {
 	nodes []*Client
