@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
@@ -12,24 +14,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const targetDir = "../target"
-
+const targetLib = "../target/lib"
 const baseURL = "https://github.com/EspressoSystems/espresso-network-go/releases"
 
 func main() {
 	var version string
 	var url string
+	var destination string
 
 	var rootCmd = &cobra.Command{Use: "app"}
 	var downloadCmd = &cobra.Command{
 		Use:   "download",
 		Short: "Download the static library",
 		Run: func(cmd *cobra.Command, args []string) {
-			download(version, url)
+			download(version, url, destination)
 		},
 	}
 	downloadCmd.Flags().StringVarP(&version, "version", "v", "latest", "Specify the version to download")
 	downloadCmd.Flags().StringVarP(&url, "url", "u", "", "Specify the url to download. If this is set, the version flag will be ignored")
+	downloadCmd.Flags().StringVarP(&destination, "destination", "d", "./", "Specify the destination to download the library to")
 
 	var cleanCmd = &cobra.Command{
 		Use:   "clean",
@@ -39,7 +42,19 @@ func main() {
 		},
 	}
 
-	rootCmd.AddCommand(downloadCmd, cleanCmd)
+	var filePath string
+	var checkSum string
+	var linkCmd = &cobra.Command{
+		Use:   "link",
+		Short: "Create a symlink to the downloaded library",
+		Run: func(cmd *cobra.Command, args []string) {
+			createSymlink(filePath, checkSum)
+		},
+	}
+	linkCmd.Flags().StringVarP(&filePath, "filePath", "f", "", "Specify the file path to create the symlink in")
+	linkCmd.Flags().StringVarP(&checkSum, "checkSum", "c", "", "Specify the checkSum to create the symlink in")
+
+	rootCmd.AddCommand(downloadCmd, cleanCmd, linkCmd)
 	err := rootCmd.Execute()
 	if err != nil {
 		fmt.Printf("Failed to execute command: %s\n", err)
@@ -47,20 +62,83 @@ func main() {
 	}
 }
 
-func download(version string, specifiedUrl string) {
-	fileName := getFileName()
+func createSymlink(path string, checkSum string) {
+	linkName := getFileName()
 	fileDir := getFileDir()
-	libFilePath := filepath.Join(fileDir, fileName)
+	linkPath := filepath.Join(fileDir, linkName)
 
-	if _, err := os.Stat(libFilePath); err == nil {
-		fmt.Println("File already exists. Run clean to remove it first.")
+	if !filepath.IsAbs(path) {
+		absPath, err := filepath.Abs(path)
+		if err != nil {
+			fmt.Printf("Failed to get absolute path: %s\n", err)
+			os.Exit(1)
+		}
+		path = absPath
+	}
+
+	if _, err := os.Stat(linkPath); err == nil {
+		fmt.Printf("Symlink %s already exists\n, Run clean to remove it first.\n", linkPath)
 		return
+	}
+
+	// Check if the target file exists and is a regular file
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		fmt.Printf("Target file does not exist: %s\n", path)
+		os.Exit(1)
+	}
+	if !fileInfo.Mode().IsRegular() {
+		fmt.Printf("Target file is not a regular file: %s\n", path)
+		os.Exit(1)
+	}
+
+	// Check if the target file matches the checksum
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Printf("Failed to open target file: %s\n", err)
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	checksum, err := hashFile(file)
+	if err != nil {
+		fmt.Printf("Failed to calculate checksum: %s\n", err)
+		os.Exit(1)
+	}
+	if checksum != checkSum {
+		fmt.Printf("Checksum mismatch: %s != %s\n", checksum, checkSum)
+		os.Exit(1)
 	}
 
 	if err := os.MkdirAll(fileDir, 0755); err != nil {
 		fmt.Printf("Failed to create target directory: %s\n", err)
 		os.Exit(1)
 	}
+
+	err = os.Symlink(path, linkPath)
+	if err != nil {
+		fmt.Printf("Failed to create symlink: %s\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Created symlink: %s\n", linkPath)
+}
+
+func hashFile(file *os.File) (string, error) {
+	// Ensure we read from the beginning of the file
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		return "", err
+	}
+	hasher := sha256.New()
+	if _, err := io.Copy(hasher, file); err != nil {
+		return "", err
+	}
+	sum := hasher.Sum(nil)
+	return hex.EncodeToString(sum), nil
+}
+
+func download(version string, specifiedUrl string, destination string) {
+	fileName := getFileName()
 
 	var url string
 	if specifiedUrl != "" {
@@ -77,7 +155,7 @@ func download(version string, specifiedUrl string) {
 	}
 	defer resp.Body.Close()
 
-	out, err := os.Create(libFilePath)
+	out, err := os.Create(filepath.Join(destination, fileName))
 	if err != nil {
 		fmt.Printf("Failed to create file: %s\n", err)
 		os.Exit(1)
@@ -90,7 +168,7 @@ func download(version string, specifiedUrl string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Static library downloaded to: %s\n", libFilePath)
+	fmt.Printf("Verification library downloaded to: %s\n", destination)
 }
 
 func clean() {
@@ -146,5 +224,5 @@ func getFileDir() string {
 		panic("No caller information")
 	}
 
-	return filepath.Join(path.Dir(filename), targetDir)
+	return filepath.Join(path.Dir(filename), targetLib)
 }
