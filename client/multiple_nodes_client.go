@@ -18,16 +18,21 @@ var _ QueryService = (*MultipleNodesClient)(nil)
 var _ SubmitAPI = (*MultipleNodesClient)(nil)
 var _ EspressoClient = (*MultipleNodesClient)(nil)
 
+var IncorrectUrlAmountErr = errors.New("The MultipleNodesClient must be constructed with more than one node url")
+
 type MultipleNodesClient struct {
 	nodes []*Client
 }
 
-func NewMultipleNodesClient(urls []string) *MultipleNodesClient {
+func NewMultipleNodesClient(urls []string) (*MultipleNodesClient, error) {
 	nodes := make([]*Client, len(urls))
+	if len(urls) <= 1 {
+		return nil, IncorrectUrlAmountErr
+	}
 	for i, url := range urls {
 		nodes[i] = NewClient(url)
 	}
-	return &MultipleNodesClient{nodes: nodes}
+	return &MultipleNodesClient{nodes: nodes}, nil
 }
 
 func (c *MultipleNodesClient) FetchLatestBlockHeight(ctx context.Context) (uint64, error) {
