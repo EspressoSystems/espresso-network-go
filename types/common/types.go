@@ -288,7 +288,7 @@ type Version struct {
 }
 
 func (v *Version) UnmarshalJSON(b []byte) error {
-	// Use an alias type to avoid recusive calls of this function
+	// Use an alias type to avoid recursive, reclusive calls of this function
 	type Alias Version
 
 	type Dec struct {
