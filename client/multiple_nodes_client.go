@@ -128,7 +128,7 @@ func (c *MultipleNodesClient) FetchVidCommonByHeight(ctx context.Context, blockH
 }
 
 func (c *MultipleNodesClient) SubmitTransaction(ctx context.Context, tx common.Transaction) (*common.TaggedBase64, error) {
-	// check if one node is successfullly able to submit the transaction
+	// check if one node is successfully able to submit the transaction
 	for _, node := range c.nodes {
 		hash, err := node.SubmitTransaction(ctx, tx)
 		if err == nil {
